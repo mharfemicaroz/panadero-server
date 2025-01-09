@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 initializeFirebase();
 
 const corsOptions = {
-  origin: ["http://localhost:5173", "https://panadero-server.area51.ph"],
+  origin: ["http://localhost:5173", "https://panadero.area51.ph"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
