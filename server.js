@@ -7,6 +7,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const useroutes = require("./routes/user/userRoutes");
 const authRoutes = require("./routes/auth/authRoutes");
+const productRoutes = require("./routes/product");
+const warehouseRoutes = require("./routes/warehouse/warehouseRoutes");
 const db = require("./models");
 
 const app = express();
@@ -33,6 +35,8 @@ app.use(bodyParser.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", useroutes);
+app.use("/api/product", productRoutes);
+app.use("/api/warehouse", warehouseRoutes);
 
 app.listen(PORT, () => {
   console.log(`Running at ${PORT}`);

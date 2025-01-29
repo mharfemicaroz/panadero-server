@@ -14,7 +14,7 @@ class AuthService {
       // Sign the token using the plain JWT secret from .env
       const token = jwt.sign(
         { id: user.id, email: user.email },
-        "mharfenelsongwapo", // Use JWT_SECRET from environment variables
+        "panaderopanadero", // Use JWT_SECRET from environment variables
         { expiresIn: "1h" }
       );
       return token;

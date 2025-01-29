@@ -11,15 +11,21 @@ const loadModels = (dir) => {
     if (fs.statSync(filePath).isDirectory()) {
       loadModels(filePath);
     } else if (file.endsWith(".js")) {
-      const model = require(filePath)(sequelize, DataTypes);
-      db[model.name] = model;
+      const modelInitializer = require(filePath);
+      if (typeof modelInitializer === "function") {
+        const model = modelInitializer(sequelize, DataTypes);
+        db[model.name] = model;
+      }
     }
   });
 };
 
+// Load models dynamically
+loadModels(path.join(__dirname, "product"));
 loadModels(path.join(__dirname, "user"));
+loadModels(path.join(__dirname, "warehouse"));
 
-// Set up associations
+// Set up associations after models are loaded
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
