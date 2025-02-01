@@ -12,7 +12,6 @@ class CategoryController {
         sortBy,
         sortOrder,
       } = req.query;
-
       const filters = {
         name,
         categoryGroupId: categoryGroupId
@@ -20,11 +19,8 @@ class CategoryController {
           : undefined,
         is_active: is_active !== undefined ? is_active === "true" : undefined,
       };
-
       const queryParams = { page, limit, filters, sortBy, sortOrder };
-
       const result = await categoryService.getList(queryParams);
-
       res.status(200).json({
         total: result.count,
         totalPages: Math.ceil(result.count / limit),
@@ -41,8 +37,9 @@ class CategoryController {
 
   async showAll(req, res) {
     try {
-      const categories = await categoryService.getAllWithProducts();
-
+      const { warehouse_id } = req.query;
+      const warehouseId = warehouse_id ? parseInt(warehouse_id, 10) : undefined;
+      const categories = await categoryService.getAllWithProducts(warehouseId);
       const formattedResponse = {
         total: categories.length,
         totalPages: null,
@@ -57,17 +54,40 @@ class CategoryController {
                 id: product.id,
                 name: product.name,
                 price: parseFloat(product.price),
+                inventories: product.inventories.map((inv) => ({
+                  warehouse: inv.warehouse
+                    ? {
+                        id: inv.warehouse.id,
+                        name: inv.warehouse.name,
+                      }
+                    : null,
+                  current_quantity: inv.current_quantity,
+                  minimum_quantity: inv.minimum_quantity,
+                  maximum_quantity: inv.maximum_quantity,
+                  reorder_level: inv.reorder_level,
+                })),
               })),
             })),
             products: category.products.map((product) => ({
               id: product.id,
               name: product.name,
               price: parseFloat(product.price),
+              inventories: product.inventories.map((inv) => ({
+                warehouse: inv.warehouse
+                  ? {
+                      id: inv.warehouse.id,
+                      name: inv.warehouse.name,
+                    }
+                  : null,
+                current_quantity: inv.current_quantity,
+                minimum_quantity: inv.minimum_quantity,
+                maximum_quantity: inv.maximum_quantity,
+                reorder_level: inv.reorder_level,
+              })),
             })),
           })),
         },
       };
-
       res.status(200).json(formattedResponse);
     } catch (error) {
       res

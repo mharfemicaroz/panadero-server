@@ -6,16 +6,16 @@ const authMiddleware = require("../../middleware/authMiddleware");
 // Get all items
 router.get("/", authMiddleware, itemController.list);
 
-// Create a new item
+// Create a new item (with inventory creation)
 router.post("/", authMiddleware, itemController.create);
 
-// Get item by ID
+// Get an item by ID
 router.get("/:id", authMiddleware, itemController.getById);
 
-// Update item
+// Update an item
 router.put("/:id", authMiddleware, itemController.update);
 
-// Delete item
+// Delete an item
 router.delete("/:id", authMiddleware, itemController.delete);
 
 module.exports = router;

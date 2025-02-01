@@ -5,8 +5,8 @@ class CategoryService {
     return categoryRepository.listing(queryParams);
   }
 
-  async getAllWithProducts() {
-    return categoryRepository.getAllWithProducts();
+  async getAllWithProducts(warehouseId) {
+    return categoryRepository.getAllWithProducts(warehouseId);
   }
 
   async create(data) {

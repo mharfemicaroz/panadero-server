@@ -28,7 +28,6 @@ class ItemController {
       };
 
       const queryParams = { page, limit, filters, sortBy, sortOrder };
-
       const result = await itemService.getList(queryParams);
 
       res.status(200).json({
@@ -78,22 +77,22 @@ class ItemController {
     } catch (error) {
       res
         .status(500)
-        .json({ message: "Error creating Item", error: error.message });
+        .json({ message: "Error creating item", error: error.message });
     }
   }
 
   async getById(req, res) {
     try {
-      const Item = await itemService.getById(req.params.id);
-      if (Item) {
-        res.status(200).json(Item);
+      const item = await itemService.getById(req.params.id);
+      if (item) {
+        res.status(200).json(item);
       } else {
         res.status(404).json({ message: "Item not found" });
       }
     } catch (error) {
       res
         .status(500)
-        .json({ message: "Error fetching Item", error: error.message });
+        .json({ message: "Error fetching item", error: error.message });
     }
   }
 
@@ -108,7 +107,7 @@ class ItemController {
     } catch (error) {
       res
         .status(500)
-        .json({ message: "Error updating Item", error: error.message });
+        .json({ message: "Error updating item", error: error.message });
     }
   }
 
@@ -123,7 +122,7 @@ class ItemController {
     } catch (error) {
       res
         .status(500)
-        .json({ message: "Error deleting Item", error: error.message });
+        .json({ message: "Error deleting item", error: error.message });
     }
   }
 }

@@ -42,6 +42,16 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      defaultScope: {
+        attributes: [
+          "id",
+          "username",
+          "role",
+          "email",
+          "first_name",
+          "last_name",
+        ],
+      },
       tableName: "users",
       underscored: true,
       timestamps: true,

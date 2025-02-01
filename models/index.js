@@ -24,6 +24,8 @@ const loadModels = (dir) => {
 loadModels(path.join(__dirname, "product"));
 loadModels(path.join(__dirname, "user"));
 loadModels(path.join(__dirname, "warehouse"));
+loadModels(path.join(__dirname, "customer"));
+loadModels(path.join(__dirname, "branch"));
 
 // Set up associations after models are loaded
 Object.keys(db).forEach((modelName) => {

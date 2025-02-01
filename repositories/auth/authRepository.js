@@ -3,7 +3,7 @@ const User = db.User;
 
 class AuthRepository {
   async getByEmail(email) {
-    return await User.findOne({ where: { email } });
+    return await User.unscoped().findOne({ where: { email } });
   }
 
   async create(data) {
@@ -11,25 +11,25 @@ class AuthRepository {
   }
 
   async storeResetToken(userId, resetToken) {
-    const user = await User.findByPk(userId);
+    const user = await User.unscoped().findByPk(userId);
     if (user) {
       user.resetToken = resetToken;
-      user.resetTokenExpiry = Date.now() + 3600000; // Token expiry (1 hour)
+      user.resetTokenExpiry = Date.now() + 3600000; // 1 hour expiry
       await user.save();
     }
   }
 
   async getByResetToken(resetToken) {
-    return await User.findOne({
+    return await User.unscoped().findOne({
       where: {
         resetToken: resetToken,
-        resetTokenExpiry: { [db.Sequelize.Op.gt]: Date.now() }, // Token still valid
+        resetTokenExpiry: { [db.Sequelize.Op.gt]: Date.now() },
       },
     });
   }
 
   async updatePassword(userId, newPassword) {
-    const user = await User.findByPk(userId);
+    const user = await User.unscoped().findByPk(userId);
     if (user) {
       user.password = newPassword;
       await user.save();

@@ -63,7 +63,6 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
       },
       subcategory_id: {
-        // Optional
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
@@ -88,19 +87,33 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "warehouse_id",
       as: "warehouse",
     });
-
-    // ✅ FIX: Define belongsTo association with Category
     Item.belongsTo(models.Category, {
       foreignKey: "category_id",
       as: "category",
     });
-
-    // ✅ FIX: Define belongsTo association with Subcategory
     Item.belongsTo(models.Subcategory, {
       foreignKey: "subcategory_id",
       as: "subcategory",
     });
+    Item.hasMany(models.Inventory, {
+      foreignKey: "item_id",
+      as: "inventories",
+    });
   };
+
+  // Automatically create an Inventory record for this item after creation
+  Item.afterCreate(async (item, options) => {
+    try {
+      const inventoryModel = sequelize.models.Inventory;
+      await inventoryModel.create({
+        item_id: item.id,
+        warehouse_id: item.warehouse_id,
+        current_quantity: item.beginning_qty,
+      });
+    } catch (error) {
+      console.error("Error creating initial inventory record for item:", error);
+    }
+  });
 
   return Item;
 };
