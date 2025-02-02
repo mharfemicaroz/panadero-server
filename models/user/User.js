@@ -40,6 +40,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      refreshToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      twoFAEnabled: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      twoFASecret: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       defaultScope: {
@@ -50,10 +62,11 @@ module.exports = (sequelize, DataTypes) => {
           "email",
           "first_name",
           "last_name",
+          "twoFAEnabled",
         ],
       },
       tableName: "users",
-      underscored: true,
+      underscored: false,
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",

@@ -1,26 +1,103 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const speakeasy = require("speakeasy");
+const qrcode = require("qrcode");
 const authRepository = require("../../repositories/auth/authRepository");
 require("dotenv").config();
 
 class AuthService {
   async login(email, password) {
     const user = await authRepository.getByEmail(email);
+
     if (!user || !user.password) {
-      // If user is not found or password is missing, throw an error or return null
       throw new Error("User not found or password not available");
     }
+
     // Compare provided password with stored hash
-    if (bcrypt.compareSync(password, user.password)) {
-      const token = jwt.sign(
-        { id: user.id, email: user.email },
-        process.env.JWT_SECRET || "panaderopanadero",
-        { expiresIn: "1h" }
-      );
-      return token;
+    if (!bcrypt.compareSync(password, user.password)) {
+      throw new Error("Invalid credentials");
     }
-    return null;
+
+    // ✅ Check if user has 2FA enabled
+    if (user.twoFAEnabled) {
+      // ✅ Generate temporary token for 2FA validation
+      const tempToken = jwt.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET || "temporary_secret",
+        { expiresIn: "5m" } // Short-lived token for 2FA
+      );
+
+      return { requires2FA: true, tempToken };
+    }
+
+    return this.generateTokens(user);
+  }
+
+  async verify2FA(tempToken, otp) {
+    try {
+      const decoded = jwt.verify(
+        tempToken,
+        process.env.JWT_SECRET || "temporary_secret"
+      );
+      const user = await authRepository.getById(decoded.id);
+
+      if (!user || !user.twoFAEnabled) {
+        throw new Error("User not found or 2FA not enabled");
+      }
+
+      const isValid = speakeasy.totp.verify({
+        secret: user.twoFASecret,
+        encoding: "base32",
+        token: otp,
+        window: 1,
+      });
+
+      if (!isValid) {
+        throw new Error("Invalid 2FA OTP");
+      }
+
+      return this.generateTokens(user);
+    } catch (error) {
+      throw new Error("Invalid or expired 2FA verification token");
+    }
+  }
+
+  async enable2FA(userId) {
+    const secret = speakeasy.generateSecret({ name: "MyApp" });
+
+    await authRepository.updateUser(userId, {
+      twoFAEnabled: true,
+      twoFASecret: secret.base32,
+    });
+
+    const qrCode = await qrcode.toDataURL(secret.otpauth_url);
+    return { qrCode, secret: secret.base32 };
+  }
+
+  async disable2FA(userId) {
+    await authRepository.updateUser(userId, {
+      twoFAEnabled: false,
+      twoFASecret: null,
+    });
+  }
+
+  async refreshToken(oldRefreshToken) {
+    try {
+      const decoded = jwt.verify(
+        oldRefreshToken,
+        process.env.JWT_REFRESH_SECRET || "refresh_secret"
+      );
+
+      const user = await authRepository.getById(decoded.id);
+      if (!user || user.refreshToken !== oldRefreshToken) {
+        throw new Error("Invalid refresh token");
+      }
+
+      return this.generateTokens(user);
+    } catch (error) {
+      throw new Error("Invalid or expired refresh token");
+    }
   }
 
   async register(data) {
@@ -30,10 +107,6 @@ class AuthService {
       password: hashedPassword,
     });
     return user;
-  }
-
-  async logout() {
-    // Logout logic if needed
   }
 
   async generatePasswordResetToken(email) {
@@ -54,6 +127,31 @@ class AuthService {
       return true;
     }
     return false;
+  }
+
+  generateTokens(user) {
+    const accessToken = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET || "access_secret",
+      { expiresIn: "1h" }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      process.env.JWT_REFRESH_SECRET || "refresh_secret",
+      { expiresIn: "7d" }
+    );
+
+    authRepository.storeRefreshToken(user.id, refreshToken);
+
+    return {
+      accessToken,
+      refreshToken,
+      email: user.email,
+      role: user.role,
+      id: user.id,
+      twoFAEnabled: user.twoFAEnabled,
+    };
   }
 }
 

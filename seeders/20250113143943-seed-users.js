@@ -21,6 +21,9 @@ module.exports = {
       is_staff: true,
       created_at: new Date(),
       updated_at: new Date(),
+      refreshToken: null,
+      twoFAEnabled: false,
+      twoFASecret: null,
     });
 
     // Generate 99 random users
@@ -39,6 +42,9 @@ module.exports = {
         is_staff: false,
         created_at: new Date(),
         updated_at: new Date(),
+        refreshToken: null,
+        twoFAEnabled: false,
+        twoFASecret: null,
       });
     }
 

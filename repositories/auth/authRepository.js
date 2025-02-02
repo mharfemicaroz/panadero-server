@@ -6,12 +6,24 @@ class AuthRepository {
     return await User.unscoped().findOne({ where: { email } });
   }
 
+  async getById(userId) {
+    return await User.unscoped().findByPk(userId);
+  }
+
   async create(data) {
     return await User.create(data);
   }
 
+  async storeRefreshToken(userId, refreshToken) {
+    const user = await this.getById(userId);
+    if (user) {
+      user.refreshToken = refreshToken;
+      await user.save();
+    }
+  }
+
   async storeResetToken(userId, resetToken) {
-    const user = await User.unscoped().findByPk(userId);
+    const user = await this.getById(userId);
     if (user) {
       user.resetToken = resetToken;
       user.resetTokenExpiry = Date.now() + 3600000; // 1 hour expiry
@@ -29,11 +41,20 @@ class AuthRepository {
   }
 
   async updatePassword(userId, newPassword) {
-    const user = await User.unscoped().findByPk(userId);
+    const user = await this.getById(userId);
     if (user) {
       user.password = newPassword;
       await user.save();
     }
+  }
+
+  // ✅ Added updateUser function
+  async updateUser(userId, updates) {
+    const user = await this.getById(userId);
+    if (!user) throw new Error("User not found");
+
+    await user.update(updates);
+    return user;
   }
 }
 
