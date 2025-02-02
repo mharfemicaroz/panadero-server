@@ -87,6 +87,38 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.NOW,
       },
+      payment_type: {
+        type: Sequelize.ENUM(
+          "Cash",
+          "Check",
+          "Debit Card",
+          "Credit Card",
+          "E-Wallet",
+          "Bank"
+        ),
+        allowNull: false,
+        defaultValue: "Cash",
+      },
+      checkNumber: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      bankName: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      walletReference: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      cardAuthCode: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      bankReference: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
     });
   },
 

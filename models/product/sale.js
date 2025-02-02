@@ -60,10 +60,41 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      payment_type: {
+        type: DataTypes.ENUM(
+          "Cash",
+          "Check",
+          "Debit Card",
+          "Credit Card",
+          "E-Wallet",
+          "Bank"
+        ),
+        allowNull: false,
+      },
+      checkNumber: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      bankName: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      walletReference: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      cardAuthCode: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      bankReference: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       tableName: "sales",
-      underscored: true,
+      underscored: false,
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",

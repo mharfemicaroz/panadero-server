@@ -19,8 +19,15 @@ class SaleService {
       total_amount,
       discount_total,
       remarks,
+      payment_type,
+      checkNumber,
+      bankName,
+      walletReference,
+      cardAuthCode,
+      bankReference,
       items,
     } = data;
+
     const saleData = {
       user_id,
       branch_id,
@@ -32,7 +39,14 @@ class SaleService {
       total_amount: total_amount || 0,
       discount_total: discount_total || 0,
       remarks: remarks || null,
+      payment_type,
+      checkNumber,
+      bankName,
+      walletReference,
+      cardAuthCode,
+      bankReference,
     };
+
     const itemsData = items || [];
     return await saleRepository.createWithItems(saleData, itemsData);
   }

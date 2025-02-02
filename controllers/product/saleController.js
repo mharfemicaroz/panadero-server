@@ -15,7 +15,9 @@ class SaleController {
         end_date,
         sortBy,
         sortOrder,
+        payment_type,
       } = req.query;
+
       const filters = {
         user_id: user_id ? parseInt(user_id, 10) : undefined,
         branch_id: branch_id ? parseInt(branch_id, 10) : undefined,
@@ -24,9 +26,12 @@ class SaleController {
         status: status || undefined,
         start_date: start_date || undefined,
         end_date: end_date || undefined,
+        payment_type: payment_type || undefined,
       };
+
       const queryParams = { page, limit, filters, sortBy, sortOrder };
       const result = await saleService.getList(queryParams);
+
       res.status(200).json({
         total: result.count,
         totalPages: Math.ceil(result.count / (limit || 10)),
@@ -40,6 +45,7 @@ class SaleController {
         .json({ message: "Error fetching sales", error: error.message });
     }
   }
+
   async create(req, res) {
     try {
       const newSale = await saleService.create(req.body);

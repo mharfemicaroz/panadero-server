@@ -22,6 +22,7 @@ class SaleRepository {
     if (filters.branch_id) where.branch_id = filters.branch_id;
     if (filters.warehouse_id) where.warehouse_id = filters.warehouse_id;
     if (filters.customer_id) where.customer_id = filters.customer_id;
+    if (filters.payment_type) where.payment_type = filters.payment_type;
     if (filters.start_date && filters.end_date) {
       where.sale_date = {
         [db.Sequelize.Op.between]: [filters.start_date, filters.end_date],
