@@ -1,6 +1,6 @@
-const saleRepository = require("@repositories/product/saleRepository");
+const saleRepository = global.requireV2("repositories/product/saleRepository");
 const inventoryService = require("./inventoryService");
-const db = require("@models");
+const db = global.requireV2("models");
 
 class SaleService {
   async getList(queryParams) {

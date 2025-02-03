@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const warehouseController = require("@controllers/warehouse/warehouseController");
-const authMiddleware = require("@middleware/authMiddleware");
+const warehouseController = global.requireV2(
+  "controllers/warehouse/warehouseController"
+);
+const authMiddleware = global.requireV2("middleware/authMiddleware");
 
 // Get all warehouses (protected route)
 router.get("/", authMiddleware, warehouseController.list);

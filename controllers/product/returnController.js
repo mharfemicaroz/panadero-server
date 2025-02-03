@@ -1,4 +1,4 @@
-const returnService = require("@services/product/returnService");
+const returnService = global.requireV2("services/product/returnService");
 
 class ReturnController {
   async list(req, res) {

@@ -1,4 +1,6 @@
-const customerRepository = require("@repositories/customer/customerRepository");
+const customerRepository = global.requireV2(
+  "repositories/customer/customerRepository"
+);
 
 class CustomerService {
   async getList(queryParams) {

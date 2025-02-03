@@ -1,6 +1,6 @@
-const db = require("@models");
+const db = global.requireV2("models");
 const CategoryGroup = db.CategoryGroup;
-const AbstractRepository = require("@base/AbstractRepository");
+const AbstractRepository = global.requireV2("base/AbstractRepository");
 
 class CategoryGroupRepository extends AbstractRepository {
   constructor() {

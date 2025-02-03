@@ -1,4 +1,6 @@
-const categoryRepository = require("@repositories/product/categoryRepository");
+const categoryRepository = global.requireV2(
+  "repositories/product/categoryRepository"
+);
 
 class CategoryService {
   async getList(queryParams) {

@@ -1,4 +1,6 @@
-const pricingRepository = require("@repositories/product/pricingRepository");
+const pricingRepository = global.requireV2(
+  "repositories/product/pricingRepository"
+);
 
 class PricingService {
   async getList(queryParams) {

@@ -1,4 +1,6 @@
-const subcategoryService = require("@services/product/subcategoryService");
+const subcategoryService = global.requireV2(
+  "services/product/subcategoryService"
+);
 
 class SubcategoryController {
   async list(req, res) {

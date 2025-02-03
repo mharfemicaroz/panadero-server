@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const orderController = require("@controllers/product/orderController");
-const authMiddleware = require("@middleware/authMiddleware");
+const orderController = global.requireV2("controllers/product/orderController");
+const authMiddleware = global.requireV2("middleware/authMiddleware");
 
 router.get("/", authMiddleware, orderController.list);
 router.post("/", authMiddleware, orderController.create);

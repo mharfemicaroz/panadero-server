@@ -1,4 +1,4 @@
-const db = require("@models");
+const db = global.requireV2("models");
 const Order = db.Order;
 const OrderItem = db.OrderItem;
 const User = db.User;

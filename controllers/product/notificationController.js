@@ -1,4 +1,6 @@
-const notificationService = require("@services/product/notificationService");
+const notificationService = global.requireV2(
+  "services/product/notificationService"
+);
 
 class NotificationController {
   async list(req, res) {

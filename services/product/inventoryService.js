@@ -1,4 +1,6 @@
-const inventoryRepository = require("@repositories/product/inventoryRepository");
+const inventoryRepository = global.requireV2(
+  "repositories/product/inventoryRepository"
+);
 const notificationService = require("./notificationService");
 
 class InventoryService {

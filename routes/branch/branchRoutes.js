@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const branchController = require("@controllers/branch/branchController");
-const authMiddleware = require("@middleware/authMiddleware");
+const branchController = global.requireV2(
+  "controllers/branch/branchController"
+);
+const authMiddleware = global.requireV2("middleware/authMiddleware");
 
 router.get("/", authMiddleware, branchController.list);
 router.post("/", authMiddleware, branchController.create);

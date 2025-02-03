@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const returnController = require("@controllers/product/returnController");
-const authMiddleware = require("@middleware/authMiddleware");
+const returnController = global.requireV2(
+  "controllers/product/returnController"
+);
+const authMiddleware = global.requireV2("middleware/authMiddleware");
 
 router.get("/", authMiddleware, returnController.list);
 router.post("/", authMiddleware, returnController.create);

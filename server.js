@@ -1,3 +1,9 @@
+const path = require("path");
+
+global.requireV2 = (relativePath) => {
+  return require(path.join(process.cwd(), relativePath));
+};
+
 // Load environment variables
 require("dotenv").config();
 require("module-alias/register");

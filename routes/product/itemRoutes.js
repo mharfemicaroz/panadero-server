@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const itemController = require("@controllers/product/itemController");
-const authMiddleware = require("@middleware/authMiddleware");
+const itemController = global.requireV2("controllers/product/itemController");
+const authMiddleware = global.requireV2("middleware/authMiddleware");
 
 // Get all items
 router.get("/", authMiddleware, itemController.list);

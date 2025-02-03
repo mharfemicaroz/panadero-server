@@ -1,4 +1,4 @@
-const pricingService = require("@services/product/pricingService");
+const pricingService = global.requireV2("services/product/pricingService");
 
 class PricingController {
   async list(req, res) {

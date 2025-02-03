@@ -1,8 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const categoryController = require("@controllers/product/categoryController");
-const subcategoryController = require("@controllers/product/subcategoryController");
-const authMiddleware = require("@middleware/authMiddleware");
+const categoryController = global.requireV2(
+  "controllers/product/categoryController"
+);
+const subcategoryController = global.requireV2(
+  "controllers/product/subcategoryController"
+);
+const authMiddleware = global.requireV2("middleware/authMiddleware");
 
 // Get all categories
 router.get("/", authMiddleware, categoryController.list);

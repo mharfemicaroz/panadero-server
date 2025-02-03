@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const subcategoryController = require("@controllers/product/subcategoryController");
-const authMiddleware = require("@middleware/authMiddleware");
+const subcategoryController = global.requireV2(
+  "controllers/product/subcategoryController"
+);
+const authMiddleware = global.requireV2("middleware/authMiddleware");
 
 // Get all subcategories (protected route)
 router.get("/", authMiddleware, subcategoryController.list);

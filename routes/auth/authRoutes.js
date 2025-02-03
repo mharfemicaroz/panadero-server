@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authController = require("@controllers/auth/authController");
+const authController = global.requireV2("controllers/auth/authController");
 
 // Authentication routes
 router.post("/register", authController.register);

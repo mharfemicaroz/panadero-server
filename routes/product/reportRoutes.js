@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const reportController = require("@controllers/product/reportController");
-const authMiddleware = require("@middleware/authMiddleware");
+const reportController = global.requireV2(
+  "controllers/product/reportController"
+);
+const authMiddleware = global.requireV2("middleware/authMiddleware");
 
 router.get(
   "/inventory-summary",

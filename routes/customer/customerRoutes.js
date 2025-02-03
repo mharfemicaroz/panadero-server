@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const customerController = require("@controllers/customer/customerController");
-const authMiddleware = require("@middleware/authMiddleware"); // If authentication is required
+const customerController = global.requireV2(
+  "controllers/customer/customerController"
+);
+const authMiddleware = global.requireV2("middleware/authMiddleware"); // If authentication is required
 
 // List all customers
 router.get("/", authMiddleware, customerController.list);

@@ -1,4 +1,4 @@
-const inventoryService = require("@services/product/inventoryService");
+const inventoryService = global.requireV2("services/product/inventoryService");
 
 class InventoryController {
   /**

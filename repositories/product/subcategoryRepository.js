@@ -1,8 +1,8 @@
 const { Op } = require("sequelize");
-const db = require("@models");
+const db = global.requireV2("models");
 const Subcategory = db.Subcategory;
 const Category = db.Category;
-const AbstractRepository = require("@base/AbstractRepository");
+const AbstractRepository = global.requireV2("base/AbstractRepository");
 
 class SubcategoryRepository extends AbstractRepository {
   constructor() {

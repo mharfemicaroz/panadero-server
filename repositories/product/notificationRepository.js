@@ -1,4 +1,4 @@
-const db = require("@models");
+const db = global.requireV2("models");
 const Notification = db.Notification;
 const Item = db.Item;
 const Warehouse = db.Warehouse;
