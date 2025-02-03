@@ -1,4 +1,4 @@
-const supplierService = require("../../services/product/supplierService");
+const supplierService = require("@services/product/supplierService");
 
 class SupplierController {
   async list(req, res) {

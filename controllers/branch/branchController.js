@@ -1,4 +1,4 @@
-const branchService = require("../../services/branch/branchService");
+const branchService = require("@services/branch/branchService");
 
 class BranchController {
   async list(req, res) {

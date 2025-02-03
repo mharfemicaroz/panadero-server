@@ -1,6 +1,6 @@
-const orderRepository = require("../../repositories/product/orderRepository");
+const orderRepository = require("@repositories/product/orderRepository");
 const inventoryService = require("./inventoryService");
-const db = require("../../models");
+const db = require("@models");
 
 class OrderService {
   async getList(queryParams) {

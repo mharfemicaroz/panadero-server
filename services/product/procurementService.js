@@ -1,4 +1,4 @@
-const procurementRepository = require("../../repositories/product/procurementRepository");
+const procurementRepository = require("@repositories/product/procurementRepository");
 const inventoryService = require("./inventoryService");
 
 class ProcurementService {

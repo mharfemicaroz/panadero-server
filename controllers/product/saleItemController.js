@@ -1,4 +1,4 @@
-const saleItemService = require("../../services/product/saleItemService");
+const saleItemService = require("@services/product/saleItemService");
 
 class SaleItemController {
   async getById(req, res) {

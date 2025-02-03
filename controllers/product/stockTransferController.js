@@ -1,4 +1,4 @@
-const stockTransferService = require("../../services/product/stockTransferService");
+const stockTransferService = require("@services/product/stockTransferService");
 
 class StockTransferController {
   /**
@@ -50,12 +50,10 @@ class StockTransferController {
         data: result.rows,
       });
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error fetching stock transfers",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error fetching stock transfers",
+        error: error.message,
+      });
     }
   }
 
@@ -67,12 +65,10 @@ class StockTransferController {
       const newTransfer = await stockTransferService.create(req.body);
       res.status(201).json(newTransfer);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error creating stock transfer",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error creating stock transfer",
+        error: error.message,
+      });
     }
   }
 

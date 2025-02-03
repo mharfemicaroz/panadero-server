@@ -1,4 +1,4 @@
-const discountService = require("../../services/product/discountService");
+const discountService = require("@services/product/discountService");
 
 class DiscountController {
   async list(req, res) {

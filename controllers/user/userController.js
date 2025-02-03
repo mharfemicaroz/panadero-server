@@ -1,4 +1,4 @@
-const userService = require("../../services/user/userService");
+const userService = require("@services/user/userService");
 
 class UserController {
   async list(req, res) {

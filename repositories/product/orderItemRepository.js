@@ -1,7 +1,7 @@
-const db = require("../../models");
+const db = require("@models");
 const OrderItem = db.OrderItem;
 const Item = db.Item;
-const AbstractRepository = require("../../base/AbstractRepository");
+const AbstractRepository = require("@base/AbstractRepository");
 
 class OrderItemRepository extends AbstractRepository {
   constructor() {

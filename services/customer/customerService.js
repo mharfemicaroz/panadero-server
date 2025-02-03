@@ -1,4 +1,4 @@
-const customerRepository = require("../../repositories/customer/customerRepository");
+const customerRepository = require("@repositories/customer/customerRepository");
 
 class CustomerService {
   async getList(queryParams) {

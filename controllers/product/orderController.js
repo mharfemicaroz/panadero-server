@@ -1,4 +1,4 @@
-const orderService = require("../../services/product/orderService");
+const orderService = require("@services/product/orderService");
 
 class OrderController {
   async list(req, res) {

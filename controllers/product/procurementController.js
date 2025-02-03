@@ -1,4 +1,4 @@
-const procurementService = require("../../services/product/procurementService");
+const procurementService = require("@services/product/procurementService");
 
 class ProcurementController {
   async list(req, res) {
@@ -98,12 +98,10 @@ class ProcurementController {
         return res.status(404).json({ message: "Procurement not found" });
       res.status(200).json(updated);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error completing procurement",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error completing procurement",
+        error: error.message,
+      });
     }
   }
 }

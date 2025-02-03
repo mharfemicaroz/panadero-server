@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
-const db = require("../../models");
+const db = require("@models");
 const Damage = db.Damage;
-const AbstractRepository = require("../../base/AbstractRepository");
+const AbstractRepository = require("@base/AbstractRepository");
 
 class DamageRepository extends AbstractRepository {
   constructor() {

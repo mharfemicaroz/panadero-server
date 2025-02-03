@@ -1,4 +1,4 @@
-const stockTransferRepository = require("../../repositories/product/stockTransferRepository");
+const stockTransferRepository = require("@repositories/product/stockTransferRepository");
 const inventoryService = require("./inventoryService"); // or wherever it's located
 
 class StockTransferService {

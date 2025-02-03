@@ -1,4 +1,4 @@
-const db = require("../../models");
+const db = require("@models");
 const Notification = db.Notification;
 const Item = db.Item;
 const Warehouse = db.Warehouse;

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const reportController = require("../../controllers/product/reportController");
-const authMiddleware = require("../../middleware/authMiddleware");
+const reportController = require("@controllers/product/reportController");
+const authMiddleware = require("@middleware/authMiddleware");
 
 router.get(
   "/inventory-summary",

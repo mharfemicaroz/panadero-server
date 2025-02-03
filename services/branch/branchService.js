@@ -1,4 +1,4 @@
-const branchRepository = require("../../repositories/branch/branchRepository");
+const branchRepository = require("@repositories/branch/branchRepository");
 
 class BranchService {
   async getList(queryParams) {
