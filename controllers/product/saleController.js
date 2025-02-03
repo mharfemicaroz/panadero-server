@@ -34,7 +34,7 @@ class SaleController {
 
       res.status(200).json({
         total: result.count,
-        totalPages: Math.ceil(result.count / (limit || 10)),
+        totalPages: Math.floor(result.count / (limit || 10)) - 1,
         currentPage: parseInt(page || 1, 10),
         pageSize: parseInt(limit || 10, 10),
         data: result.rows,
