@@ -5,6 +5,7 @@ global.requireV2 = (relativePath) => {
 };
 
 // Load environment variables
+//new test comment
 require("dotenv").config();
 require("module-alias/register");
 
