@@ -1,9 +1,9 @@
 {
     "development": {
         "username": "root",
-        "password": "",
+        "password": "Euler143!",
         "database": "panadero",
-        "host": "localhost",
+        "host": "aws-db.ct4yosk22krb.ap-southeast-2.rds.amazonaws.com",
         "dialect": "mysql",
         "port": 3306
     },
