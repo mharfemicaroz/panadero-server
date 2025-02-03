@@ -1,7 +1,4 @@
 deployment:
   tasks:
-    - export DEPLOY_DIR="/"
-    - echo "Starting deployment..."
-    - cd "$DEPLOY_DIR"
-    - git pull origin main
-    - echo "Deployment complete."
+    - export DEPLOYPATH=/home/areawcmk/apiv1/
+    - /bin/cp * $DEPLOYPATH
