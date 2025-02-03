@@ -1,4 +1,6 @@
-const saleItemRepository = require("@repositories/product/saleItemRepository");
+const saleItemRepository = global.requireV2(
+  "repositories/product/saleItemRepository"
+);
 
 class SaleItemService {
   async getById(id) {

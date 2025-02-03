@@ -1,4 +1,6 @@
-const procurementService = require("@services/product/procurementService");
+const procurementService = global.requireV2(
+  "services/product/procurementService"
+);
 
 class ProcurementController {
   async list(req, res) {

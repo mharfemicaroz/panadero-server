@@ -1,4 +1,4 @@
-const db = require("@models");
+const db = global.requireV2("models");
 
 class ReportsController {
   async stockMovements(req, res) {

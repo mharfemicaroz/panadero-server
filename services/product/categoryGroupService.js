@@ -1,4 +1,6 @@
-const categoryGroupRepository = require("@repositories/product/categoryGroupRepository");
+const categoryGroupRepository = global.requireV2(
+  "repositories/product/categoryGroupRepository"
+);
 
 class CategoryGroupService {
   async getList() {

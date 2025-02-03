@@ -1,4 +1,6 @@
-const warehouseService = require("@services/warehouse/warehouseService");
+const warehouseService = global.requireV2(
+  "services/warehouse/warehouseService"
+);
 
 class WarehouseController {
   async list(req, res) {

@@ -1,4 +1,4 @@
-const db = require("@models");
+const db = global.requireV2("models");
 const User = db.User;
 
 class AuthRepository {

@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
-const db = require("@models");
+const db = global.requireV2("models");
 const Discount = db.Discount;
-const AbstractRepository = require("@base/AbstractRepository");
+const AbstractRepository = global.requireV2("base/AbstractRepository");
 
 class DiscountRepository extends AbstractRepository {
   constructor() {

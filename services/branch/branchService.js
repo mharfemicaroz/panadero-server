@@ -1,4 +1,6 @@
-const branchRepository = require("@repositories/branch/branchRepository");
+const branchRepository = global.requireV2(
+  "repositories/branch/branchRepository"
+);
 
 class BranchService {
   async getList(queryParams) {

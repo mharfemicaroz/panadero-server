@@ -1,5 +1,9 @@
-const notificationRepository = require("@repositories/product/notificationRepository");
-const inventoryRepository = require("@repositories/product/inventoryRepository");
+const notificationRepository = global.requireV2(
+  "repositories/product/notificationRepository"
+);
+const inventoryRepository = global.requireV2(
+  "repositories/product/inventoryRepository"
+);
 
 class NotificationService {
   async getAll(queryParams) {

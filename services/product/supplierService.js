@@ -1,4 +1,6 @@
-const supplierRepository = require("@repositories/product/supplierRepository");
+const supplierRepository = global.requireV2(
+  "repositories/product/supplierRepository"
+);
 
 class SupplierService {
   async getList(queryParams) {

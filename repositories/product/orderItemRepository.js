@@ -1,7 +1,7 @@
-const db = require("@models");
+const db = global.requireV2("models");
 const OrderItem = db.OrderItem;
 const Item = db.Item;
-const AbstractRepository = require("@base/AbstractRepository");
+const AbstractRepository = global.requireV2("base/AbstractRepository");
 
 class OrderItemRepository extends AbstractRepository {
   constructor() {

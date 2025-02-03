@@ -1,4 +1,6 @@
-const stockTransferService = require("@services/product/stockTransferService");
+const stockTransferService = global.requireV2(
+  "services/product/stockTransferService"
+);
 
 class StockTransferController {
   /**

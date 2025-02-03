@@ -1,4 +1,6 @@
-const returnRepository = require("@repositories/product/returnRepository");
+const returnRepository = global.requireV2(
+  "repositories/product/returnRepository"
+);
 const inventoryService = require("./inventoryService");
 
 class ReturnService {

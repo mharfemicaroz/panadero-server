@@ -1,6 +1,8 @@
-const orderRepository = require("@repositories/product/orderRepository");
+const orderRepository = global.requireV2(
+  "repositories/product/orderRepository"
+);
 const inventoryService = require("./inventoryService");
-const db = require("@models");
+const db = global.requireV2("models");
 
 class OrderService {
   async getList(queryParams) {

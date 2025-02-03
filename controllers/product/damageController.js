@@ -1,4 +1,4 @@
-const damageService = require("@services/product/damageService");
+const damageService = global.requireV2("services/product/damageService");
 
 class DamageController {
   async list(req, res) {

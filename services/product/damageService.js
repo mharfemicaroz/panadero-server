@@ -1,4 +1,6 @@
-const damageRepository = require("@repositories/product/damageRepository");
+const damageRepository = global.requireV2(
+  "repositories/product/damageRepository"
+);
 const inventoryService = require("./inventoryService");
 
 class DamageService {

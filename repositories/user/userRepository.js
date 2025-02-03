@@ -1,6 +1,6 @@
-const db = require("@models");
+const db = global.requireV2("models");
 const User = db.User;
-const AbstractRepository = require("@base/AbstractRepository");
+const AbstractRepository = global.requireV2("base/AbstractRepository");
 
 class UserRepository extends AbstractRepository {
   constructor() {

@@ -1,4 +1,4 @@
-const userRepository = require("@repositories/user/UserRepository");
+const userRepository = global.requireV2("repositories/user/UserRepository");
 
 class UserService {
   async getList() {

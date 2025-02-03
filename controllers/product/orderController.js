@@ -1,4 +1,4 @@
-const orderService = require("@services/product/orderService");
+const orderService = global.requireV2("services/product/orderService");
 
 class OrderController {
   async list(req, res) {

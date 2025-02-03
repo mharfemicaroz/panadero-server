@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const userController = require("@controllers/user/UserController");
-const authMiddleware = require("@middleware/authMiddleware"); // Import the authMiddleware
+const userController = global.requireV2("controllers/user/UserController");
+const authMiddleware = global.requireV2("middleware/authMiddleware"); // Import the authMiddleware
 
 // Get all users (protected route)
 router.get("/", authMiddleware, userController.list);

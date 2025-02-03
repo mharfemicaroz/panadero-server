@@ -1,4 +1,6 @@
-const categoryGroupService = require("@services/product/categoryGroupService");
+const categoryGroupService = global.requireV2(
+  "services/product/categoryGroupService"
+);
 
 class CategoryGroupController {
   async list(req, res) {
