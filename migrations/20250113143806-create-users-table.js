@@ -70,11 +70,11 @@ module.exports = {
         allowNull: true,
       },
       twoFAEnabled: {
-        type: DataTypes.BOOLEAN,
+        type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
       twoFASecret: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: true,
       },
     });
