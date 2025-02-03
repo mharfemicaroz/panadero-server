@@ -65,6 +65,18 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.NOW,
       },
+      refreshToken: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      twoFAEnabled: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      twoFASecret: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     });
   },
 

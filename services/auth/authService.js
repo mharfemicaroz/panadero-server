@@ -1,62 +1,157 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto"); // For generating reset tokens
-const userRepository = require("../../repositories/user/UserRepository");
-require("dotenv").config(); // Make sure dotenv is loaded
-
-// Log the JWT_SECRET to debug
-console.log("JWT_SECRET in authService: ", process.env.JWT_SECRET);
+const crypto = require("crypto");
+const speakeasy = require("speakeasy");
+const qrcode = require("qrcode");
+const authRepository = require("../../repositories/auth/authRepository");
+require("dotenv").config();
 
 class AuthService {
   async login(email, password) {
-    const user = await userRepository.getByEmail(email);
-    if (user && bcrypt.compareSync(password, user.password)) {
-      // Sign the token using the plain JWT secret from .env
-      const token = jwt.sign(
-        { id: user.id, email: user.email },
-        "mharfenelsongwapo", // Use JWT_SECRET from environment variables
-        { expiresIn: "1h" }
-      );
-      return token;
+    const user = await authRepository.getByEmail(email);
+
+    if (!user || !user.password) {
+      throw new Error("User not found or password not available");
     }
-    return null;
+
+    // Compare provided password with stored hash
+    if (!bcrypt.compareSync(password, user.password)) {
+      throw new Error("Invalid credentials");
+    }
+
+    // ✅ Check if user has 2FA enabled
+    if (user.twoFAEnabled) {
+      // ✅ Generate temporary token for 2FA validation
+      const tempToken = jwt.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET || "temporary_secret",
+        { expiresIn: "5m" } // Short-lived token for 2FA
+      );
+
+      return { requires2FA: true, tempToken };
+    }
+
+    return this.generateTokens(user);
+  }
+
+  async verify2FA(tempToken, otp) {
+    try {
+      const decoded = jwt.verify(
+        tempToken,
+        process.env.JWT_SECRET || "temporary_secret"
+      );
+      const user = await authRepository.getById(decoded.id);
+
+      if (!user || !user.twoFAEnabled) {
+        throw new Error("User not found or 2FA not enabled");
+      }
+
+      const isValid = speakeasy.totp.verify({
+        secret: user.twoFASecret,
+        encoding: "base32",
+        token: otp,
+        window: 1,
+      });
+
+      if (!isValid) {
+        throw new Error("Invalid 2FA OTP");
+      }
+
+      return this.generateTokens(user);
+    } catch (error) {
+      throw new Error("Invalid or expired 2FA verification token");
+    }
+  }
+
+  async enable2FA(userId) {
+    const secret = speakeasy.generateSecret({ name: "MyApp" });
+
+    await authRepository.updateUser(userId, {
+      twoFAEnabled: true,
+      twoFASecret: secret.base32,
+    });
+
+    const qrCode = await qrcode.toDataURL(secret.otpauth_url);
+    return { qrCode, secret: secret.base32 };
+  }
+
+  async disable2FA(userId) {
+    await authRepository.updateUser(userId, {
+      twoFAEnabled: false,
+      twoFASecret: null,
+    });
+  }
+
+  async refreshToken(oldRefreshToken) {
+    try {
+      const decoded = jwt.verify(
+        oldRefreshToken,
+        process.env.JWT_REFRESH_SECRET || "refresh_secret"
+      );
+
+      const user = await authRepository.getById(decoded.id);
+      if (!user || user.refreshToken !== oldRefreshToken) {
+        throw new Error("Invalid refresh token");
+      }
+
+      return this.generateTokens(user);
+    } catch (error) {
+      throw new Error("Invalid or expired refresh token");
+    }
   }
 
   async register(data) {
     const hashedPassword = bcrypt.hashSync(data.password, 10);
-    const user = await userRepository.create({
+    const user = await authRepository.create({
       ...data,
       password: hashedPassword,
     });
     return user;
   }
 
-  async logout() {
-    // In case of server-side token management, this is where we would invalidate it.
-    // But usually, this happens on the client-side where the token is simply removed.
-  }
-
   async generatePasswordResetToken(email) {
-    const user = await userRepository.getByEmail(email);
+    const user = await authRepository.getByEmail(email);
     if (user) {
       const resetToken = crypto.randomBytes(20).toString("hex");
-      // Store the reset token (with expiration) in the database
-      await userRepository.storeResetToken(user.id, resetToken);
-      // Ideally, send the token to the user's email here
+      await authRepository.storeResetToken(user.id, resetToken);
       return resetToken;
     }
     return null;
   }
 
   async resetPassword(resetToken, newPassword) {
-    // Find the user by reset token
-    const user = await userRepository.getByResetToken(resetToken);
+    const user = await authRepository.getByResetToken(resetToken);
     if (user) {
       const hashedPassword = bcrypt.hashSync(newPassword, 10);
-      await userRepository.updatePassword(user.id, hashedPassword);
+      await authRepository.updatePassword(user.id, hashedPassword);
       return true;
     }
     return false;
+  }
+
+  generateTokens(user) {
+    const accessToken = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET || "access_secret",
+      { expiresIn: "1h" }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      process.env.JWT_REFRESH_SECRET || "refresh_secret",
+      { expiresIn: "7d" }
+    );
+
+    authRepository.storeRefreshToken(user.id, refreshToken);
+
+    return {
+      accessToken,
+      refreshToken,
+      email: user.email,
+      role: user.role,
+      id: user.id,
+      twoFAEnabled: user.twoFAEnabled,
+    };
   }
 }
 
