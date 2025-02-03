@@ -1,4 +1,4 @@
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/areawcmk/apiv1/
-    - /bin/cp * $DEPLOYPATH
+    - export DEPLOYPATH=/home/areawcmk/api/
+    - /bin/cp -r /home/areawcmk/apiv1/* $DEPLOYPATH
