@@ -1,6 +1,6 @@
-const db = require("../../models");
+const db = require("@models");
 const CategoryGroup = db.CategoryGroup;
-const AbstractRepository = require("../../base/AbstractRepository");
+const AbstractRepository = require("@base/AbstractRepository");
 
 class CategoryGroupRepository extends AbstractRepository {
   constructor() {

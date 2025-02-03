@@ -1,4 +1,4 @@
-const subcategoryRepository = require("../../repositories/product/subcategoryRepository");
+const subcategoryRepository = require("@repositories/product/subcategoryRepository");
 
 class SubcategoryService {
   async getList(queryParams) {

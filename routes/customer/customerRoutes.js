@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const customerController = require("../../controllers/customer/customerController");
-const authMiddleware = require("../../middleware/authMiddleware"); // If authentication is required
+const customerController = require("@controllers/customer/customerController");
+const authMiddleware = require("@middleware/authMiddleware"); // If authentication is required
 
 // List all customers
 router.get("/", authMiddleware, customerController.list);

@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const db = require("../../models");
+const db = require("@models");
 const Category = db.Category;
 const Subcategory = db.Subcategory;
 const Item = db.Item;

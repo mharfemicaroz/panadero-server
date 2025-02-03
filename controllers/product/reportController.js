@@ -1,4 +1,4 @@
-const db = require("../../models");
+const db = require("@models");
 
 class ReportsController {
   async stockMovements(req, res) {

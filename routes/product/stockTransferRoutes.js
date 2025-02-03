@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const stockTransferController = require("../../controllers/product/stockTransferController");
-const authMiddleware = require("../../middleware/authMiddleware");
+const stockTransferController = require("@controllers/product/stockTransferController");
+const authMiddleware = require("@middleware/authMiddleware");
 
 // List all stock transfers (protected route)
 router.get("/", authMiddleware, stockTransferController.list);

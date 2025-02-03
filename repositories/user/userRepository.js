@@ -1,6 +1,6 @@
-const db = require("../../models");
+const db = require("@models");
 const User = db.User;
-const AbstractRepository = require("../../base/AbstractRepository");
+const AbstractRepository = require("@base/AbstractRepository");
 
 class UserRepository extends AbstractRepository {
   constructor() {

@@ -1,4 +1,4 @@
-const saleService = require("../../services/product/saleService");
+const saleService = require("@services/product/saleService");
 
 class SaleController {
   async list(req, res) {

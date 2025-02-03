@@ -1,4 +1,4 @@
-const customerService = require("../../services/customer/customerService");
+const customerService = require("@services/customer/customerService");
 
 class CustomerController {
   async list(req, res) {

@@ -1,4 +1,4 @@
-const warehouseRepository = require("../../repositories/warehouse/warehouseRepository");
+const warehouseRepository = require("@repositories/warehouse/warehouseRepository");
 
 class WarehouseService {
   async getList(queryParams) {

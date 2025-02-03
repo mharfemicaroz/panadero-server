@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const categoryGroupController = require("../../controllers/product/categoryGroupController");
-const authMiddleware = require("../../middleware/authMiddleware"); // Import the authMiddleware
+const categoryGroupController = require("@controllers/product/categoryGroupController");
+const authMiddleware = require("@middleware/authMiddleware"); // Import the authMiddleware
 
 // Get all category groups (protected route)
 router.get("/", authMiddleware, categoryGroupController.list);

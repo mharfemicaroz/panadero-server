@@ -1,4 +1,4 @@
-const supplierRepository = require("../../repositories/product/supplierRepository");
+const supplierRepository = require("@repositories/product/supplierRepository");
 
 class SupplierService {
   async getList(queryParams) {

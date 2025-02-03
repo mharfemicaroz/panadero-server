@@ -1,4 +1,4 @@
-const orderItemRepository = require("../../repositories/product/orderItemRepository");
+const orderItemRepository = require("@repositories/product/orderItemRepository");
 
 class OrderItemService {
   async getById(id) {

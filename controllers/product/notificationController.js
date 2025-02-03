@@ -1,4 +1,4 @@
-const notificationService = require("../../services/product/notificationService");
+const notificationService = require("@services/product/notificationService");
 
 class NotificationController {
   async list(req, res) {
@@ -6,12 +6,10 @@ class NotificationController {
       const result = await notificationService.getAll(req.query);
       res.status(200).json(result);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error fetching notifications",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error fetching notifications",
+        error: error.message,
+      });
     }
   }
 

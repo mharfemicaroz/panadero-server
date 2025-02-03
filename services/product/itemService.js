@@ -1,5 +1,5 @@
-const itemRepository = require("../../repositories/product/itemRepository");
-const inventoryService = require("../../services/product/inventoryService");
+const itemRepository = require("@repositories/product/itemRepository");
+const inventoryService = require("@services/product/inventoryService");
 
 class ItemService {
   async getList(queryParams) {

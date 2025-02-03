@@ -1,4 +1,4 @@
-const warehouseService = require("../../services/warehouse/warehouseService");
+const warehouseService = require("@services/warehouse/warehouseService");
 
 class WarehouseController {
   async list(req, res) {

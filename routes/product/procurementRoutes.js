@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const procurementController = require("../../controllers/product/procurementController");
-const authMiddleware = require("../../middleware/authMiddleware");
+const procurementController = require("@controllers/product/procurementController");
+const authMiddleware = require("@middleware/authMiddleware");
 
 router.get("/", authMiddleware, procurementController.list);
 router.post("/", authMiddleware, procurementController.create);

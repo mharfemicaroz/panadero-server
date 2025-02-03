@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
-const db = require("../../models");
-const Customer = require("../../models/customer/customer")(
+const db = require("@models");
+const Customer = require("@models/customer/customer")(
   db.sequelize,
   db.Sequelize.DataTypes
 );

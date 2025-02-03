@@ -1,4 +1,4 @@
-const inventoryRepository = require("../../repositories/product/inventoryRepository");
+const inventoryRepository = require("@repositories/product/inventoryRepository");
 const notificationService = require("./notificationService");
 
 class InventoryService {

@@ -1,4 +1,4 @@
-const subcategoryService = require("../../services/product/subcategoryService");
+const subcategoryService = require("@services/product/subcategoryService");
 
 class SubcategoryController {
   async list(req, res) {
@@ -58,12 +58,10 @@ class SubcategoryController {
         data: result.rows,
       });
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error fetching subcategories",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error fetching subcategories",
+        error: error.message,
+      });
     }
   }
 

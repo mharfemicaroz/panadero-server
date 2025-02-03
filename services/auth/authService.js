@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
-const authRepository = require("../../repositories/auth/authRepository");
+const authRepository = require("@repositories/auth/authRepository");
 require("dotenv").config();
 
 class AuthService {

@@ -1,4 +1,4 @@
-const categoryGroupService = require("../../services/product/categoryGroupService");
+const categoryGroupService = require("@services/product/categoryGroupService");
 
 class CategoryGroupController {
   async list(req, res) {
@@ -6,12 +6,10 @@ class CategoryGroupController {
       const categoryGroups = await categoryGroupService.getList();
       res.status(200).json(categoryGroups);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error fetching category groups",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error fetching category groups",
+        error: error.message,
+      });
     }
   }
 
@@ -20,12 +18,10 @@ class CategoryGroupController {
       const newCategoryGroup = await categoryGroupService.create(req.body);
       res.status(201).json(newCategoryGroup);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error creating category group",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error creating category group",
+        error: error.message,
+      });
     }
   }
 
@@ -38,12 +34,10 @@ class CategoryGroupController {
         res.status(404).json({ message: "Category group not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error fetching category group",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error fetching category group",
+        error: error.message,
+      });
     }
   }
 
@@ -59,12 +53,10 @@ class CategoryGroupController {
         res.status(404).json({ message: "Category group not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error updating category group",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error updating category group",
+        error: error.message,
+      });
     }
   }
 
@@ -77,12 +69,10 @@ class CategoryGroupController {
         res.status(404).json({ message: "Category group not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "Error deleting category group",
-          error: error.message,
-        });
+      res.status(500).json({
+        message: "Error deleting category group",
+        error: error.message,
+      });
     }
   }
 }
