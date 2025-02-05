@@ -9,8 +9,8 @@
     },
     "test": {
         "username": "root",
-        "password": "",
-        "database": "panadero_test",
+        "password": "Euler143!",
+        "database": "panadero",
         "host": "localhost",
         "dialect": "mysql",
         "port": 3306

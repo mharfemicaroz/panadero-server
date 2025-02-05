@@ -21,7 +21,7 @@ const branchRoutes = require("./routes/branch/branchRoutes");
 const db = require("./models");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 const corsOptions = {
   origin: ["http://localhost:5173", "https://panadero.area51.ph"],

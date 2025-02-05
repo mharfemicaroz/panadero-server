@@ -3,8 +3,8 @@ const categoryGroupRepository = global.requireV2(
 );
 
 class CategoryGroupService {
-  async getList() {
-    return await categoryGroupRepository.listing();
+  async getList(queryParams) {
+    return await categoryGroupRepository.listing(queryParams);
   }
 
   async create(data) {

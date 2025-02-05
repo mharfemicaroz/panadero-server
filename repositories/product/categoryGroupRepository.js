@@ -1,14 +1,34 @@
+const { Op } = require("sequelize");
 const db = global.requireV2("models");
 const CategoryGroup = db.CategoryGroup;
-const AbstractRepository = global.requireV2("base/AbstractRepository");
 
-class CategoryGroupRepository extends AbstractRepository {
-  constructor() {
-    super(CategoryGroup);
-  }
+class CategoryGroupRepository {
+  async listing({
+    page = 1,
+    limit = 10,
+    filters = {},
+    sortBy = "created_at", // default sort column
+    sortOrder = "DESC", // default sort order
+  } = {}) {
+    const offset = (page - 1) * limit;
+    const where = {};
 
-  async listing() {
-    return await CategoryGroup.findAll();
+    // Apply filter on name if provided.
+    if (filters.name) {
+      where.name = { [Op.like]: `%${filters.name}%` };
+    }
+
+    // Apply filter on is_active if provided.
+    if (filters.is_active !== undefined) {
+      where.is_active = filters.is_active;
+    }
+
+    return await CategoryGroup.findAndCountAll({
+      where,
+      order: [[sortBy, sortOrder.toUpperCase()]], // apply sorting here
+      limit: parseInt(limit, 10),
+      offset,
+    });
   }
 
   async create(data) {

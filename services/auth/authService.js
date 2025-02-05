@@ -24,7 +24,7 @@ class AuthService {
       // ✅ Generate temporary token for 2FA validation
       const tempToken = jwt.sign(
         { id: user.id, email: user.email },
-        process.env.JWT_SECRET || "temporary_secret",
+        process.env.JWT_SECRET,
         { expiresIn: "5m" } // Short-lived token for 2FA
       );
 
@@ -36,10 +36,7 @@ class AuthService {
 
   async verify2FA(tempToken, otp) {
     try {
-      const decoded = jwt.verify(
-        tempToken,
-        process.env.JWT_SECRET || "temporary_secret"
-      );
+      const decoded = jwt.verify(tempToken, process.env.JWT_SECRET);
       const user = await authRepository.getById(decoded.id);
 
       if (!user || !user.twoFAEnabled) {
@@ -86,7 +83,7 @@ class AuthService {
     try {
       const decoded = jwt.verify(
         oldRefreshToken,
-        process.env.JWT_REFRESH_SECRET || "refresh_secret"
+        process.env.JWT_REFRESH_SECRET
       );
 
       const user = await authRepository.getById(decoded.id);
@@ -132,13 +129,13 @@ class AuthService {
   generateTokens(user) {
     const accessToken = jwt.sign(
       { id: user.id, email: user.email },
-      process.env.JWT_SECRET || "access_secret",
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
     const refreshToken = jwt.sign(
       { id: user.id },
-      process.env.JWT_REFRESH_SECRET || "refresh_secret",
+      process.env.JWT_REFRESH_SECRET,
       { expiresIn: "7d" }
     );
 

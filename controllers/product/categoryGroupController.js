@@ -5,8 +5,30 @@ const categoryGroupService = global.requireV2(
 class CategoryGroupController {
   async list(req, res) {
     try {
-      const categoryGroups = await categoryGroupService.getList();
-      res.status(200).json(categoryGroups);
+      // Extract pagination and sorting parameters with optional defaults
+      const { page, limit, sort, order } = req.query;
+
+      // If filters are provided using the filters[...] syntax, use them.
+      let filters = req.query.filters || {};
+
+      // Build query params including sorting info.
+      const queryParams = {
+        page,
+        limit,
+        filters,
+        sortBy: sort, // will default to repository default if undefined
+        sortOrder: order, // will default to repository default if undefined
+      };
+
+      const result = await categoryGroupService.getList(queryParams);
+
+      res.status(200).json({
+        total: result.count,
+        totalPages: limit ? Math.ceil(result.count / limit) : null,
+        currentPage: limit ? parseInt(page, 10) : null,
+        pageSize: limit ? parseInt(limit, 10) : null,
+        data: result.rows,
+      });
     } catch (error) {
       res.status(500).json({
         message: "Error fetching category groups",
