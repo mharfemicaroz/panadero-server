@@ -16,10 +16,17 @@ class CategoryRepository {
   }) {
     const offset = (page - 1) * limit;
     const where = {};
-    if (filters.name) where.name = { [Op.like]: `%${filters.name}%` };
-    if (filters.categoryGroupId)
+
+    if (filters.name) {
+      where.name = { [Op.like]: `%${filters.name}%` };
+    }
+    if (filters.categoryGroupId) {
       where.categoryGroupId = filters.categoryGroupId;
-    if (filters.is_active !== undefined) where.is_active = filters.is_active;
+    }
+    if (filters.is_active !== undefined) {
+      where.is_active = filters.is_active;
+    }
+
     return Category.findAndCountAll({
       where,
       include: { model: db.CategoryGroup, as: "categoryGroup" },

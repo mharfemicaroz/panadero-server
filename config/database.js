@@ -2,7 +2,7 @@ const { Sequelize } = require("sequelize");
 const config = require("../config/config.json");
 require("dotenv").config();
 
-const env = process.env.NODE_ENV || "development";
+const env = process.env.NODE_ENV;
 // Get environment
 const dbConfig = config[env];
 // Get Config Credential

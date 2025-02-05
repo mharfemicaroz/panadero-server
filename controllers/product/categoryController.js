@@ -3,24 +3,39 @@ const categoryService = global.requireV2("services/product/categoryService");
 class CategoryController {
   async list(req, res) {
     try {
+      // Extract parameters with defaults
       const {
-        page,
-        limit,
-        name,
+        page = 1,
+        limit = 10,
+        sort = "created_at", // default column to sort by
+        order = "DESC", // default sort order
         categoryGroupId,
         is_active,
-        sortBy,
-        sortOrder,
       } = req.query;
-      const filters = {
-        name,
-        categoryGroupId: categoryGroupId
-          ? parseInt(categoryGroupId, 10)
-          : undefined,
-        is_active: is_active !== undefined ? is_active === "true" : undefined,
+
+      // Use req.query.filters if provided; otherwise build filters from individual query params.
+      let filters = req.query.filters || {};
+
+      // If some filters are provided as top-level parameters, add them.
+      if (categoryGroupId) {
+        filters.categoryGroupId = parseInt(categoryGroupId, 10);
+      }
+      if (is_active !== undefined) {
+        filters.is_active = is_active === "true";
+      }
+
+      // Build query params using the new sort parameters
+      const queryParams = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+        filters,
+        sortBy: sort,
+        sortOrder: order,
       };
-      const queryParams = { page, limit, filters, sortBy, sortOrder };
+
+      // Call the service to get the list
       const result = await categoryService.getList(queryParams);
+
       res.status(200).json({
         total: result.count,
         totalPages: Math.ceil(result.count / limit),
@@ -29,9 +44,10 @@ class CategoryController {
         data: result.rows,
       });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error fetching categories", error: error.message });
+      res.status(500).json({
+        message: "Error fetching categories",
+        error: error.message,
+      });
     }
   }
 
