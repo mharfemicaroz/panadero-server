@@ -111,7 +111,7 @@ module.exports = (sequelize, DataTypes) => {
         current_quantity: item.beginning_qty,
       });
     } catch (error) {
-      console.error("Error creating initial inventory record for item:", error);
+      console.error("Inventory creation failed for item ID:", item.id, error);
     }
   });
 

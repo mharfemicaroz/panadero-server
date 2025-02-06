@@ -3,46 +3,57 @@ const warehouseService = global.requireV2(
 );
 
 class WarehouseController {
+  /**
+   * List all warehouses with pagination, filters, and sorting
+   */
   async list(req, res) {
     try {
-      const { page, limit, name, location, is_active, sortBy, sortOrder } =
-        req.query;
+      const { page, limit, sort, order } = req.query;
+      let filters = req.query.filters || {};
 
-      const filters = {
-        name,
-        location,
-        is_active: is_active !== undefined ? is_active === "true" : undefined,
+      const queryParams = {
+        page,
+        limit,
+        filters,
+        sortBy: sort,
+        sortOrder: order,
       };
-
-      const queryParams = { page, limit, filters, sortBy, sortOrder };
 
       const result = await warehouseService.getList(queryParams);
 
       res.status(200).json({
         total: result.count,
-        totalPages: Math.ceil(result.count / limit),
-        currentPage: parseInt(page, 10),
-        pageSize: parseInt(limit, 10),
+        totalPages: limit ? Math.ceil(result.count / limit) : null,
+        currentPage: limit ? parseInt(page, 10) : null,
+        pageSize: limit ? parseInt(limit, 10) : null,
         data: result.rows,
       });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error fetching warehouses", error: error.message });
+      res.status(500).json({
+        message: "Error fetching warehouses",
+        error: error.message,
+      });
     }
   }
 
+  /**
+   * Create a new warehouse
+   */
   async create(req, res) {
     try {
       const newWarehouse = await warehouseService.create(req.body);
       res.status(201).json(newWarehouse);
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error creating warehouse", error: error.message });
+      res.status(500).json({
+        message: "Error creating warehouse",
+        error: error.message,
+      });
     }
   }
 
+  /**
+   * Get a warehouse by ID
+   */
   async getById(req, res) {
     try {
       const warehouse = await warehouseService.getById(req.params.id);
@@ -52,12 +63,16 @@ class WarehouseController {
         res.status(404).json({ message: "Warehouse not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error fetching warehouse", error: error.message });
+      res.status(500).json({
+        message: "Error fetching warehouse",
+        error: error.message,
+      });
     }
   }
 
+  /**
+   * Update an existing warehouse
+   */
   async update(req, res) {
     try {
       const updatedWarehouse = await warehouseService.alter(
@@ -70,12 +85,16 @@ class WarehouseController {
         res.status(404).json({ message: "Warehouse not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error updating warehouse", error: error.message });
+      res.status(500).json({
+        message: "Error updating warehouse",
+        error: error.message,
+      });
     }
   }
 
+  /**
+   * Delete a warehouse
+   */
   async delete(req, res) {
     try {
       const result = await warehouseService.delete(req.params.id);
@@ -85,9 +104,16 @@ class WarehouseController {
         res.status(404).json({ message: "Warehouse not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error deleting warehouse", error: error.message });
+      if (error.name === "SequelizeForeignKeyConstraintError") {
+        return res.status(409).json({
+          message:
+            "Cannot delete warehouse because it's referenced by other records",
+        });
+      }
+      res.status(500).json({
+        message: "Error deleting warehouse",
+        error: error.message,
+      });
     }
   }
 }

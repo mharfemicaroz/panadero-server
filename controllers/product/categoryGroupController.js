@@ -88,12 +88,22 @@ class CategoryGroupController {
     try {
       const result = await categoryGroupService.delete(req.params.id);
       if (result) {
-        res.status(200).json({ message: "Category group deleted" });
+        return res.status(200).json({ message: "Category group deleted" });
       } else {
-        res.status(404).json({ message: "Category group not found" });
+        return res.status(404).json({ message: "Category group not found" });
       }
     } catch (error) {
-      res.status(500).json({
+      // Check if it’s a foreign key constraint error (Sequelize example)
+      if (error.name === "SequelizeForeignKeyConstraintError") {
+        // You can return a 400 or 409 depending on how you want to handle this conflict
+        return res.status(409).json({
+          message:
+            "Cannot delete category group because it's referenced by other records",
+        });
+      }
+
+      // For all other errors, return a generic 500 error
+      return res.status(500).json({
         message: "Error deleting category group",
         error: error.message,
       });

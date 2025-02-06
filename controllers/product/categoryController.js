@@ -165,9 +165,19 @@ class CategoryController {
         res.status(404).json({ message: "Category not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error deleting category", error: error.message });
+      // Check if it’s a foreign key constraint error (Sequelize example)
+      if (error.name === "SequelizeForeignKeyConstraintError") {
+        // You can return a 400 or 409 depending on how you prefer to signal this conflict
+        return res.status(409).json({
+          message:
+            "Cannot delete category because it's referenced by other records",
+        });
+      }
+
+      res.status(500).json({
+        message: "Error deleting category",
+        error: error.message,
+      });
     }
   }
 }
