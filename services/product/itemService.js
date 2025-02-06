@@ -8,14 +8,7 @@ class ItemService {
 
   async create(data) {
     // Create the item first
-    const newItem = await itemRepository.create(data);
-    // Create a corresponding inventory record using beginning_qty
-    await inventoryService.create({
-      item_id: newItem.id,
-      warehouse_id: newItem.warehouse_id,
-      current_quantity: newItem.beginning_qty,
-    });
-    return newItem;
+    return itemRepository.create(data);
   }
 
   async getById(id) {
