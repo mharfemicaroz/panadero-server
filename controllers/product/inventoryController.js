@@ -2,33 +2,48 @@ const inventoryService = global.requireV2("services/product/inventoryService");
 
 class InventoryController {
   /**
-   * List all inventory records (paginated).
+   * Fetch paginated list of inventory records with optional filters.
    */
   async list(req, res) {
     try {
-      const { page, limit, item_id, warehouse_id, sortBy, sortOrder } =
-        req.query;
+      const {
+        page = 1,
+        limit = 10,
+        sort = "created_at",
+        order = "DESC",
+        item_id,
+        warehouse_id,
+      } = req.query;
 
+      // Build filters
       const filters = {
         item_id: item_id ? parseInt(item_id, 10) : undefined,
         warehouse_id: warehouse_id ? parseInt(warehouse_id, 10) : undefined,
       };
 
-      const queryParams = { page, limit, filters, sortBy, sortOrder };
+      // Query parameters including sorting
+      const queryParams = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+        filters,
+        sortBy: sort,
+        sortOrder: order,
+      };
 
       const result = await inventoryService.getList(queryParams);
 
       res.status(200).json({
         total: result.count,
         totalPages: Math.ceil(result.count / limit),
-        currentPage: parseInt(page || 1, 10),
-        pageSize: parseInt(limit || 10, 10),
+        currentPage: parseInt(page, 10),
+        pageSize: parseInt(limit, 10),
         data: result.rows,
       });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error fetching inventory", error: error.message });
+      res.status(500).json({
+        message: "Error fetching inventory records",
+        error: error.message,
+      });
     }
   }
 
@@ -40,14 +55,15 @@ class InventoryController {
       const newRecord = await inventoryService.create(req.body);
       res.status(201).json(newRecord);
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error creating inventory", error: error.message });
+      res.status(500).json({
+        message: "Error creating inventory record",
+        error: error.message,
+      });
     }
   }
 
   /**
-   * Get an inventory record by ID.
+   * Fetch an inventory record by ID.
    */
   async getById(req, res) {
     try {
@@ -58,14 +74,15 @@ class InventoryController {
         res.status(404).json({ message: "Inventory record not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error fetching inventory", error: error.message });
+      res.status(500).json({
+        message: "Error fetching inventory record",
+        error: error.message,
+      });
     }
   }
 
   /**
-   * Update an inventory record (PUT).
+   * Update an inventory record.
    */
   async update(req, res) {
     try {
@@ -79,9 +96,10 @@ class InventoryController {
         res.status(404).json({ message: "Inventory record not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error updating inventory", error: error.message });
+      res.status(500).json({
+        message: "Error updating inventory record",
+        error: error.message,
+      });
     }
   }
 
@@ -97,15 +115,24 @@ class InventoryController {
         res.status(404).json({ message: "Inventory record not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error deleting inventory", error: error.message });
+      // Handle foreign key constraint error
+      if (error.name === "SequelizeForeignKeyConstraintError") {
+        return res.status(409).json({
+          message:
+            "Cannot delete inventory record because it is referenced by other records",
+        });
+      }
+
+      res.status(500).json({
+        message: "Error deleting inventory record",
+        error: error.message,
+      });
     }
   }
 
   /**
-   * Adjust quantity: expects { quantityChange } in body
-   * e.g. +10 means stock IN, -5 means stock OUT
+   * Adjust inventory quantity: expects { quantityChange } in body.
+   * Positive value means stock IN, negative value means stock OUT.
    */
   async adjustQuantity(req, res) {
     try {
