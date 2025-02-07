@@ -1,0 +1,30 @@
+name: FTP Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - main  # Change this branch name if you want to deploy from a different branch
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository so the workflow has access to your code
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Deploy files via FTP to cPanel
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          # Use your FTP host (include the port if necessary)
+          server: "ftp.panadero-api.site"
+          port: 21
+          # Retrieve credentials from GitHub Secrets
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # Local directory to deploy. Adjust if needed.
+          local-dir: "./"
+          # Remote directory (the "path" from your FTP config)
+          server-dir: "/"
