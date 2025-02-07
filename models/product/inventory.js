@@ -4,10 +4,6 @@ module.exports = (sequelize, DataTypes) => {
   const Inventory = sequelize.define(
     "Inventory",
     {
-      // Example: If you're tracking multiple warehouses
-      // and individual stock per warehouse, you'll want
-      // item_id + warehouse_id as a unique composite.
-
       item_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -46,11 +42,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      // We can also store cost, average_cost, etc. if needed:
-      // average_cost: {
-      //   type: DataTypes.DECIMAL(10,2),
-      //   allowNull: true,
-      // },
     },
     {
       tableName: "inventories",
@@ -58,12 +49,6 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
       createdAt: "created_at",
       updatedAt: "updated_at",
-      // indexes: [
-      //   {
-      //     unique: true,
-      //     fields: ["item_id", "warehouse_id"], // prevent duplicate inventory lines
-      //   },
-      // ],
     }
   );
 

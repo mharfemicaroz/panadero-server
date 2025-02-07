@@ -142,16 +142,16 @@ class InventoryController {
           .status(400)
           .json({ message: "quantityChange must be a number" });
       }
-
+      // Assuming your auth middleware attaches the user to req.user
+      const userId = req.user ? req.user.id : null;
       const updatedInventory = await inventoryService.adjustQuantity(
         req.params.id,
-        quantityChange
+        quantityChange,
+        userId
       );
-
       if (!updatedInventory) {
         return res.status(404).json({ message: "Inventory record not found" });
       }
-
       res.status(200).json(updatedInventory);
     } catch (error) {
       res.status(500).json({

@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, col, where: sequelizeWhere } = require("sequelize");
 const db = global.requireV2("models");
 const Category = db.Category;
 const Subcategory = db.Subcategory;
@@ -57,10 +57,19 @@ class CategoryRepository {
                     "maximum_quantity",
                     "reorder_level",
                   ],
-                  // If warehouseId is provided, filter inventories by that warehouse.
-                  where: warehouseId
-                    ? { warehouse_id: warehouseId }
-                    : undefined,
+                  // Combine warehouse filter (if provided) with the condition that
+                  // current_quantity must be greater than minimum_quantity.
+                  where: {
+                    ...(warehouseId ? { warehouse_id: warehouseId } : {}),
+                    [Op.and]: [
+                      // Use column names without the alias prefix.
+                      sequelizeWhere(
+                        col("current_quantity"),
+                        ">",
+                        col("minimum_quantity")
+                      ),
+                    ],
+                  },
                   required: true, // Only include this product if it has inventory.
                   include: [
                     {
@@ -88,7 +97,16 @@ class CategoryRepository {
                 "maximum_quantity",
                 "reorder_level",
               ],
-              where: warehouseId ? { warehouse_id: warehouseId } : undefined,
+              where: {
+                ...(warehouseId ? { warehouse_id: warehouseId } : {}),
+                [Op.and]: [
+                  sequelizeWhere(
+                    col("current_quantity"),
+                    ">",
+                    col("minimum_quantity")
+                  ),
+                ],
+              },
               required: true, // Only include this product if it has inventory.
               include: [
                 {

@@ -78,6 +78,7 @@ class InventoryRepository extends AbstractRepository {
         "minimum_quantity",
         "maximum_quantity",
         "reorder_level",
+        "warehouse_id",
       ],
       include: [
         {

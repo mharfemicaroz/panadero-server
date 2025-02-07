@@ -15,6 +15,7 @@ const Pricing = require("./pricing");
 const Discount = require("./discount");
 const Sale = require("./sale");
 const SaleItem = require("./saleItem");
+const StockMovement = require("./stockMovement");
 
 module.exports = (sequelize, DataTypes) => {
   const models = {
@@ -35,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     Discount: Discount(sequelize, DataTypes),
     Sale: Sale(sequelize, DataTypes),
     SaleItem: SaleItem(sequelize, DataTypes),
+    StockMovement: StockMovement(sequelize, DataTypes),
   };
 
   return models;
