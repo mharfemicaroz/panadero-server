@@ -36,7 +36,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}  # Ensure this secret is set to the correct port (e.g., 22)
           script: |
             # Activate the virtual environment and move to your app directory
-            source /home/areawcmk/nodevenv/apiv4/18/bin/activate
             cd /home/areawcmk/apiv4
             # Restart the Node application using PM2 by referencing its file name.
             pm2 restart server.js
