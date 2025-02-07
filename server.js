@@ -9,7 +9,6 @@ require("dotenv").config();
 require("module-alias/register");
 
 // server.js
-//github auto
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
