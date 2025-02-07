@@ -3,14 +3,14 @@ name: FTP Deploy to cPanel
 on:
   push:
     branches:
-      - main  # Change this branch name if you want to deploy from a different branch
+      - main  # Change this branch if needed
 
 jobs:
   ftp-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository so the workflow has access to your code
+      # Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v2
 
@@ -33,10 +33,15 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}  # Ensure this secret is set to the correct port (e.g., 22)
+          port: ${{ secrets.SSH_PORT }}  # Set this secret to the correct port (e.g., 22)
           script: |
-            # Activate the virtual environment and move to your app directory
+            # (Optionally) Activate the virtual environment for your Node version management
             source /home/areawcmk/nodevenv/apiv4/18/bin/activate
+            # Change directory to your Node app folder
             cd /home/areawcmk/apiv4
-            # Restart the Node application using PM2 by referencing its file name.
-            pm2 restart server.js
+            # Check if PM2 already manages a process named "server"
+            if pm2 list | grep -q "server"; then
+              pm2 restart server
+            else
+              pm2 start server.js --name server
+            fi
