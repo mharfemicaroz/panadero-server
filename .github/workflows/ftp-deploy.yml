@@ -24,14 +24,16 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: "./"
           server-dir: "/"
+          timeout: 180000  # Timeout set to 3 minutes
 
       # Restart Node App via SSH
       - name: Restart Node App via SSH
         uses: appleboy/ssh-action@v0.1.5
         with:
           host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          port: 22  # Ensure this secret is set to the correct port (e.g., 22)
+          port: ${{ secrets.SSH_PORT }}  # Ensure this secret is set to the correct port (e.g., 22)
           script: |
             # Activate the virtual environment and move to your app directory
             source /home/areawcmk/nodevenv/apiv4/18/bin/activate
