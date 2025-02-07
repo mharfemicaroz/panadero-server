@@ -1,3 +1,5 @@
+// services/product/saleService.js
+
 const saleRepository = global.requireV2("repositories/product/saleRepository");
 const inventoryService = require("./inventoryService");
 const db = global.requireV2("models");
@@ -48,9 +50,27 @@ class SaleService {
     };
 
     const itemsData = items || [];
+
+    // *** Pre-check inventory levels if the sale is being created as "completed" ***
+    if (saleData.status === "completed") {
+      for (const si of itemsData) {
+        // Use a negative quantity change (stock OUT)
+        await inventoryService.checkAvailabilityForItemInWarehouse(
+          si.item_id,
+          saleData.warehouse_id,
+          -si.quantity
+        );
+      }
+    }
+
+    // Create the sale record with its sale items.
     const newSale = await saleRepository.createWithItems(saleData, itemsData);
     const finalSale = await saleRepository.getById(newSale.id);
-    if (newSale.status === "completed") this.processCompletedSale(finalSale);
+
+    // If the sale is completed, adjust the inventory.
+    if (newSale.status === "completed") {
+      await this.processCompletedSale(finalSale);
+    }
     return newSale;
   }
 
@@ -70,6 +90,17 @@ class SaleService {
     const sale = await saleRepository.getById(id);
     if (!sale) return null;
     if (sale.status === "completed") return sale;
+
+    // *** Pre-check inventory levels before completing the sale ***
+    for (const si of sale.saleItems) {
+      await inventoryService.checkAvailabilityForItemInWarehouse(
+        si.item_id,
+        sale.warehouse_id,
+        -si.quantity
+      );
+    }
+
+    // Update sale status to "completed" and process inventory adjustments.
     const updatedSale = await saleRepository.update(id, {
       status: "completed",
     });
@@ -78,10 +109,15 @@ class SaleService {
     return updatedSale;
   }
 
+  /**
+   * Adjusts inventory for each sale item.
+   * Uses a transaction so that if any adjustment fails, the entire operation is rolled back.
+   */
   async processCompletedSale(saleRecord) {
     const t = await db.sequelize.transaction();
     try {
       for (const si of saleRecord.saleItems) {
+        // Adjust inventory (the inventory service’s adjustQuantity method will run its own check again)
         await inventoryService.adjustItemInWarehouse(
           si.item_id,
           saleRecord.warehouse_id,
