@@ -48,7 +48,10 @@ class SaleService {
     };
 
     const itemsData = items || [];
-    return await saleRepository.createWithItems(saleData, itemsData);
+    const newSale = await saleRepository.createWithItems(saleData, itemsData);
+    const finalSale = await saleRepository.getById(newSale.id);
+    if (newSale.status === "completed") this.processCompletedSale(finalSale);
+    return newSale;
   }
 
   async getById(id) {
