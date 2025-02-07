@@ -61,7 +61,7 @@ class CategoryRepository {
                   where: warehouseId
                     ? { warehouse_id: warehouseId }
                     : undefined,
-                  required: false,
+                  required: true, // Only include this product if it has inventory.
                   include: [
                     {
                       model: Warehouse,
@@ -89,7 +89,7 @@ class CategoryRepository {
                 "reorder_level",
               ],
               where: warehouseId ? { warehouse_id: warehouseId } : undefined,
-              required: false,
+              required: true, // Only include this product if it has inventory.
               include: [
                 {
                   model: Warehouse,
