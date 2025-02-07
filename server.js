@@ -9,7 +9,6 @@ require("dotenv").config();
 require("module-alias/register");
 
 // server.js
-//github auto
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -26,7 +25,7 @@ const PORT = process.env.PORT;
 
 const corsOptions = {
   origin: ["http://localhost:5173", "https://panadero.area51.ph"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
