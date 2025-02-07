@@ -28,3 +28,4 @@ jobs:
           local-dir: "./"
           # Remote directory (the "path" from your FTP config)
           server-dir: "/"
+          timeout: 180000
