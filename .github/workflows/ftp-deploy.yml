@@ -24,7 +24,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: "./"
           server-dir: "/"
-          timeout: 180000  # Timeout set to 3 minutes
 
       # Restart Node App via SSH
       - name: Restart Node App via SSH
@@ -33,11 +32,10 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          port: 22
+          port: 22  # Ensure this secret is set to the correct port (e.g., 22)
           script: |
+            # Activate the virtual environment and move to your app directory
+            source /home/areawcmk/nodevenv/apiv4/18/bin/activate
             cd /home/areawcmk/apiv4
-            # Restart the Node application.
-            # Example: using PM2 (adjust the process name accordingly)
-            pm2 restart my-node-app
-            # If you have a custom restart script, you might use:
-            # npm run restart
+            # Restart the Node application using PM2 by referencing its file name.
+            pm2 restart server.js
