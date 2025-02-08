@@ -47,7 +47,7 @@ class CategoryRepository {
             {
               model: Item,
               as: "products",
-              attributes: ["id", "name", "price"],
+              attributes: ["id", "name", "price", "image"],
               include: [
                 {
                   model: Inventory,
@@ -87,7 +87,7 @@ class CategoryRepository {
         {
           model: Item,
           as: "products",
-          attributes: ["id", "name", "price"],
+          attributes: ["id", "name", "price", "image"],
           include: [
             {
               model: Inventory,
