@@ -42,6 +42,7 @@ class StockTransferRepository extends AbstractRepository {
     }
 
     const result = await StockTransfer.findAndCountAll({
+      distinct: true,
       where,
       include: [
         {

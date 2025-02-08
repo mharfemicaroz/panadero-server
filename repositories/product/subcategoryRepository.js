@@ -24,6 +24,7 @@ class SubcategoryRepository extends AbstractRepository {
     if (filters.is_active !== undefined) where.is_active = filters.is_active;
 
     return Subcategory.findAndCountAll({
+      distinct: true,
       where,
       include: { model: Category, as: "category" },
       order: [[sortBy, sortOrder.toUpperCase()]],

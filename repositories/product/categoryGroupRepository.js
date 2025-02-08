@@ -24,6 +24,7 @@ class CategoryGroupRepository {
     }
 
     return await CategoryGroup.findAndCountAll({
+      distinct: true,
       where,
       order: [[sortBy, sortOrder.toUpperCase()]], // apply sorting here
       limit: parseInt(limit, 10),

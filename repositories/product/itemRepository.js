@@ -27,6 +27,7 @@ class ItemRepository {
     if (filters.sold_by) where.sold_by = filters.sold_by;
 
     const result = await Item.findAndCountAll({
+      distinct: true,
       where,
       include: [
         { model: Warehouse, as: "warehouse" },

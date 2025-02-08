@@ -21,6 +21,7 @@ class PricingRepository extends AbstractRepository {
     if (filters.is_active !== undefined) where.is_active = filters.is_active;
     if (filters.effective_date) where.effective_date = filters.effective_date;
     return Pricing.findAndCountAll({
+      distinct: true,
       where,
       order: [[sortBy, sortOrder.toUpperCase()]],
       limit: parseInt(limit, 10),

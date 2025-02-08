@@ -26,6 +26,7 @@ class SupplierRepository extends AbstractRepository {
     }
 
     return Supplier.findAndCountAll({
+      distinct: true,
       where,
       order: [[sortBy, sortOrder.toUpperCase()]],
       limit: parseInt(limit, 10),

@@ -36,6 +36,7 @@ class CustomerRepository {
     }
 
     const result = await Customer.findAndCountAll({
+      distinct: true,
       where,
       order: [[sortBy, sortOrder.toUpperCase()]],
       limit: parseInt(limit, 10),

@@ -35,6 +35,7 @@ class StockMovementRepository extends AbstractRepository {
     // Add additional filter criteria as needed
 
     return StockMovement.findAndCountAll({
+      distinct: true,
       where,
       order: [[sortBy, sortOrder.toUpperCase()]],
       limit: parseInt(limit, 10),

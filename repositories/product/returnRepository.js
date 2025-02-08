@@ -27,6 +27,7 @@ class ReturnRepository extends AbstractRepository {
       };
     }
     return Return.findAndCountAll({
+      distinct: true,
       where,
       order: [[sortBy, sortOrder.toUpperCase()]],
       limit: parseInt(limit, 10),
