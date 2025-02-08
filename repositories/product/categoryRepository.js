@@ -28,6 +28,7 @@ class CategoryRepository {
     }
 
     return Category.findAndCountAll({
+      distinct: true,
       where,
       include: { model: db.CategoryGroup, as: "categoryGroup" },
       order: [[sortBy, sortOrder.toUpperCase()]],

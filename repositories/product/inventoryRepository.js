@@ -31,6 +31,7 @@ class InventoryRepository extends AbstractRepository {
     if (filters.warehouse_id) where.warehouse_id = filters.warehouse_id;
 
     return Inventory.findAndCountAll({
+      distinct: true,
       where,
       attributes: [
         "id",

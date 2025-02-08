@@ -24,6 +24,7 @@ class OrderRepository {
       };
     }
     return await Order.findAndCountAll({
+      distinct: true,
       where,
       include: [
         { model: User, as: "user" },

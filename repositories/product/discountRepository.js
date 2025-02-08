@@ -25,6 +25,7 @@ class DiscountRepository extends AbstractRepository {
       };
     }
     return Discount.findAndCountAll({
+      distinct: true,
       where,
       order: [[sortBy, sortOrder.toUpperCase()]],
       limit: parseInt(limit, 10),

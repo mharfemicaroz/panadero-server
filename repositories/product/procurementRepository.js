@@ -29,6 +29,7 @@ class ProcurementRepository extends AbstractRepository {
     }
 
     return Procurement.findAndCountAll({
+      distinct: true,
       where,
       order: [[sortBy, sortOrder.toUpperCase()]],
       limit: parseInt(limit, 10),

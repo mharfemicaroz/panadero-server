@@ -17,6 +17,7 @@ class BranchRepository {
       where.location = { [db.Sequelize.Op.like]: `%${filters.location}%` };
     if (filters.is_active !== undefined) where.is_active = filters.is_active;
     return await Branch.findAndCountAll({
+      distinct: true,
       where,
       order: [[sortBy, sortOrder.toUpperCase()]],
       limit: parseInt(limit, 10),

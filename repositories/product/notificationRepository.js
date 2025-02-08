@@ -18,6 +18,7 @@ class NotificationRepository {
     }
 
     return Notification.findAndCountAll({
+      distinct: true,
       where,
       include: [
         { model: Item, as: "productItem", attributes: ["name", "sku"] },
