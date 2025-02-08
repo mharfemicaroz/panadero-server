@@ -70,6 +70,7 @@ class CategoryController {
                 id: product.id,
                 name: product.name,
                 price: parseFloat(product.price),
+                image: product.image,
                 inventories: product.inventories.map((inv) => ({
                   warehouse: inv.warehouse
                     ? {
@@ -88,6 +89,7 @@ class CategoryController {
               id: product.id,
               name: product.name,
               price: parseFloat(product.price),
+              image: product.image,
               inventories: product.inventories.map((inv) => ({
                 warehouse: inv.warehouse
                   ? {
