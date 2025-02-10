@@ -39,4 +39,5 @@ jobs:
             source /home/areawcmk/nodevenv/apiv4/18/bin/activate
             # Change directory to your Node app folder
             cd /home/areawcmk/apiv4
-            pm2 reload server
+            pm2 start server.js
+            pm2 restart server
