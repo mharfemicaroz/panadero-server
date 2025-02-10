@@ -67,7 +67,7 @@ class InventoryService {
     // Create a stock movement record automatically
     await stockMovementService.createStockMovement({
       inventory_id: inventoryId,
-      type: quantityChange > 0 ? "IN" : "OUT",
+      type: quantityChange >= 0 ? "IN" : "OUT",
       quantity_change: Math.abs(quantityChange),
       new_quantity: updatedRecord.current_quantity,
       warehouse_id: record.warehouse_id,
