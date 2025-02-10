@@ -39,11 +39,17 @@ jobs:
             source /home/areawcmk/nodevenv/apiv4/18/bin/activate
             # Change directory to your Node app folder
             cd /home/areawcmk/apiv4
-            # Gracefully stop nodemon by sending SIGINT (like pressing Ctrl+C)
-            pkill -2 -f "nodemon server.js" || echo "No running nodemon process found"
+            # Stop the existing Node.js process if running
+            pm2 stop server || echo "PM2 process not found, skipping stop"
 
-            # Give some time for the process to exit cleanly
-            sleep 3
+            # Pull latest changes (optional)
+            git pull origin main || echo "Git pull failed, continuing..."
 
-            # Restart the application
-            nohup nodemon server.js > nodemon.log 2>&1 &
+            # Install dependencies (optional, if your package.json changes)
+            npm install --production || echo "npm install failed, continuing..."
+
+            # Start or restart the Node.js app with PM2
+            pm2 start server.js --name server --update-env
+
+            # Save PM2 process list so it auto-restarts on reboot
+            pm2 save
