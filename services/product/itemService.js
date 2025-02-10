@@ -1,13 +1,17 @@
+// services/product/itemService.js
 const itemRepository = global.requireV2("repositories/product/itemRepository");
-const inventoryService = global.requireV2("services/product/inventoryService");
 
 class ItemService {
   async getList(queryParams) {
     return itemRepository.listing(queryParams);
   }
 
+  // New method to get list with history
+  async getListWithHistory(queryParams) {
+    return itemRepository.listingWithHistory(queryParams);
+  }
+
   async create(data) {
-    // Create the item first
     return itemRepository.create(data);
   }
 

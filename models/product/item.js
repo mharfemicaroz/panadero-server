@@ -1,3 +1,4 @@
+// models/Item.js
 "use strict";
 
 module.exports = (sequelize, DataTypes) => {
@@ -72,6 +73,28 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
+      // Virtual field that aggregates stock movements from all related inventories
+      history: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          if (this.inventories && Array.isArray(this.inventories)) {
+            // Flatten all stock movements from each inventory
+            return this.inventories.reduce((acc, inventory) => {
+              if (
+                inventory.stock_movements &&
+                Array.isArray(inventory.stock_movements)
+              ) {
+                return acc.concat(inventory.stock_movements);
+              }
+              return acc;
+            }, []);
+          }
+          return [];
+        },
+        set(value) {
+          throw new Error("Do not try to set the `history` value!");
+        },
+      },
     },
     {
       tableName: "items",
@@ -101,7 +124,7 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-  // Automatically create an Inventory record for this item after creation
+  // After creating an Item, automatically create its Inventory record.
   Item.afterCreate(async (item, options) => {
     try {
       const inventoryModel = sequelize.models.Inventory;

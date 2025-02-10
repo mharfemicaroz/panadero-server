@@ -81,6 +81,60 @@ class ItemController {
     }
   }
 
+  async listWithHistory(req, res) {
+    try {
+      // Extract query parameters (and any filters)
+      const {
+        page = 1,
+        limit = 10,
+        sort = "created_at",
+        order = "DESC",
+        name,
+        sku,
+        warehouse_id,
+        category_id,
+        subcategory_id,
+        sold_by,
+      } = req.query;
+
+      // Build filters (you can also pass the entire req.query if you prefer)
+      let filters = req.query.filters || {};
+
+      if (name) filters.name = name;
+      if (sku) filters.sku = sku;
+      if (warehouse_id) filters.warehouse_id = parseInt(warehouse_id, 10);
+      if (category_id) filters.category_id = parseInt(category_id, 10);
+      if (subcategory_id) filters.subcategory_id = parseInt(subcategory_id, 10);
+      if (sold_by) filters.sold_by = sold_by;
+
+      const queryParams = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+        filters,
+        sortBy: sort,
+        sortOrder: order,
+      };
+
+      const result = await itemService.getListWithHistory(queryParams);
+
+      res.status(200).json({
+        total: result.count,
+        totalPages: Math.ceil(result.count / limit),
+        currentPage: parseInt(page, 10),
+        pageSize: parseInt(limit, 10),
+        data: result.rows.map((item) => {
+          // The item.toJSON() call will include the virtual `history` field.
+          return item.toJSON();
+        }),
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error fetching items with history",
+        error: error.message,
+      });
+    }
+  }
+
   /**
    * Fetch items by category
    */
