@@ -8,8 +8,8 @@ const Warehouse = db.Warehouse;
 const Customer = db.Customer;
 const Item = db.Item;
 const Category = db.Category;
-// Update the subcategory import (ensure the naming matches your model definition)
 const Subcategory = db.Subcategory;
+const Inventory = db.Inventory;
 
 class SaleRepository {
   async listing({
@@ -69,8 +69,11 @@ class SaleRepository {
               as: "item",
               include: [
                 { model: Category, as: "category" },
-                // Use the correct model and alias for subcategory
                 { model: Subcategory, as: "subcategory" },
+                {
+                  model: Inventory,
+                  as: "inventories",
+                },
               ],
             },
           ],
