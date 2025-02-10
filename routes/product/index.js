@@ -40,6 +40,6 @@ router.use("/pricing", pricingRoutes);
 router.use("/discounts", discountRoutes);
 router.use("/sales", saleRoutes);
 router.use("/sale-items", saleItemRoutes);
-router.use("/stock-movements", stockMovementRoutes);
+router.use("/stockmovements", stockMovementRoutes);
 
 module.exports = router;
