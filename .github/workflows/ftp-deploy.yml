@@ -39,5 +39,7 @@ jobs:
             source /home/areawcmk/nodevenv/apiv4/18/bin/activate
             # Change directory to your Node app folder
             cd /home/areawcmk/apiv4
-            pm2 stop all
-            nodemon server.js
+            # Find and kill the existing nodemon process
+            pkill -f "nodemon server.js" || echo "No running nodemon process found"
+            # Restart the application
+            nodemon server.js &
