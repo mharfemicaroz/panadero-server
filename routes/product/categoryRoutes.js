@@ -30,4 +30,6 @@ router.get(
   subcategoryController.listByCategory
 );
 
+router.get("/showall", categoryController.showAll);
+
 module.exports = router;
