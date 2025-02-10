@@ -4,6 +4,7 @@ const Item = db.Item;
 const Warehouse = db.Warehouse;
 const Category = db.Category;
 const Subcategory = db.Subcategory;
+const Inventory = db.Inventory;
 
 class ItemRepository {
   /**
@@ -36,6 +37,16 @@ class ItemRepository {
           model: Subcategory,
           as: "subcategory",
           required: false,
+        },
+        {
+          model: Inventory,
+          as: "inventories",
+          attributes: [
+            "current_quantity",
+            "minimum_quantity",
+            "maximum_quantity",
+            "reorder_level",
+          ],
         },
       ],
       order: [[sortBy, sortOrder.toUpperCase()]],

@@ -70,6 +70,7 @@ class ItemController {
                 description: item.subcategory.description,
               }
             : null,
+          inventory: item.inventories,
         })),
       });
     } catch (error) {
