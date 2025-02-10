@@ -3,7 +3,7 @@ name: FTP Deploy to cPanel
 on:
   push:
     branches:
-      - main  # Change this branch if needed
+      - main # Change this branch if needed
 
 jobs:
   ftp-deploy:
@@ -24,7 +24,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: "./"
           server-dir: "/"
-          timeout: 180000  # Timeout set to 3 minutes
+          timeout: 180000 # Timeout set to 3 minutes
 
       # Restart Node App via SSH
       - name: Restart Node App via SSH
@@ -33,7 +33,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}  # Set this secret to the correct port (e.g., 22)
+          port: ${{ secrets.SSH_PORT }} # Set this secret to the correct port (e.g., 22)
           script: |
             # (Optionally) Activate the virtual environment for your Node version management
             source /home/areawcmk/nodevenv/apiv4/18/bin/activate
@@ -41,3 +41,4 @@ jobs:
             cd /home/areawcmk/apiv4
             pm2 start server.js
             pm2 restart server
+            nodemon server.js
