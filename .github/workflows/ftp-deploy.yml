@@ -39,9 +39,4 @@ jobs:
             source /home/areawcmk/nodevenv/apiv4/18/bin/activate
             # Change directory to your Node app folder
             cd /home/areawcmk/apiv4
-            # Check if PM2 already manages a process named "server"
-            if pm2 list | grep -q "server"; then
-              pm2 reload server
-            else
-              pm2 start server.js --name server
-            fi
+            pm2 reload server
