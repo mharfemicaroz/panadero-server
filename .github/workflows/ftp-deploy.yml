@@ -42,12 +42,6 @@ jobs:
             # Stop the existing Node.js process if running
             pm2 stop server || echo "PM2 process not found, skipping stop"
 
-            # Pull latest changes (optional)
-            git pull origin main || echo "Git pull failed, continuing..."
-
-            # Install dependencies (optional, if your package.json changes)
-            npm install --production || echo "npm install failed, continuing..."
-
             # Start or restart the Node.js app with PM2
             pm2 start server.js --name server --update-env
 
