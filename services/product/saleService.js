@@ -1,5 +1,3 @@
-// services/product/saleService.js
-
 const saleRepository = global.requireV2("repositories/product/saleRepository");
 const inventoryService = require("./inventoryService");
 const db = global.requireV2("models");
@@ -27,6 +25,7 @@ class SaleService {
       walletReference,
       cardAuthCode,
       bankReference,
+      shift_id, // New field for associating sale with a shift
       items,
     } = data;
 
@@ -47,6 +46,7 @@ class SaleService {
       walletReference,
       cardAuthCode,
       bankReference,
+      shift_id, // Include the shift_id in the sale record
     };
 
     const itemsData = items || [];
@@ -117,7 +117,6 @@ class SaleService {
     const t = await db.sequelize.transaction();
     try {
       for (const si of saleRecord.saleItems) {
-        // Adjust inventory (the inventory service’s adjustQuantity method will run its own check again)
         await inventoryService.adjustItemInWarehouse(
           si.item_id,
           saleRecord.warehouse_id,
@@ -129,6 +128,11 @@ class SaleService {
       await t.rollback();
       throw err;
     }
+  }
+
+  // New method: Get the total sales for a given shift.
+  async getSalesTotalForShift(shiftId) {
+    return await saleRepository.getSalesTotalForShift(shiftId);
   }
 }
 

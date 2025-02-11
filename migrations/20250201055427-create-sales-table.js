@@ -49,6 +49,16 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
+      shift_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "shifts",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
+      },
       customer_name: {
         type: Sequelize.STRING,
         allowNull: true,

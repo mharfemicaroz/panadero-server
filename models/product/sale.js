@@ -36,6 +36,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      // New field: shift_id
+      shift_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: { model: "shifts", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
+      },
       status: {
         type: DataTypes.ENUM("completed", "suspended", "voided", "re-opened"),
         allowNull: false,
@@ -112,6 +120,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "customer_id",
       as: "customer",
     });
+    Sale.belongsTo(models.Shift, { foreignKey: "shift_id", as: "shift" }); // Associate with Shift
     Sale.hasMany(models.SaleItem, { foreignKey: "sale_id", as: "saleItems" });
   };
 

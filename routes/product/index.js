@@ -20,6 +20,7 @@ const discountRoutes = require("./discountRoutes");
 const saleRoutes = require("./saleRoutes");
 const saleItemRoutes = require("./saleItemRoutes");
 const stockMovementRoutes = require("./stockMovementRoutes");
+const shiftRoutes = require("./shiftRoutes");
 
 // Route groups
 router.use("/categories", categoryRoutes);
@@ -41,5 +42,6 @@ router.use("/discounts", discountRoutes);
 router.use("/sales", saleRoutes);
 router.use("/sale-items", saleItemRoutes);
 router.use("/stockmovements", stockMovementRoutes);
+router.use("/shifts", shiftRoutes);
 
 module.exports = router;
