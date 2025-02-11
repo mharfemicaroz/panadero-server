@@ -10,6 +10,7 @@ const Item = db.Item;
 const Category = db.Category;
 const Subcategory = db.Subcategory;
 const Inventory = db.Inventory;
+const Shift = db.Shift; // Added Shift model
 
 class SaleRepository {
   async listing({
@@ -22,11 +23,12 @@ class SaleRepository {
     const offset = (page - 1) * limit;
     const where = {};
 
-    // Other direct filters
+    // Direct filters
     if (filters.user_id) where.user_id = filters.user_id;
     if (filters.branch_id) where.branch_id = filters.branch_id;
     if (filters.warehouse_id) where.warehouse_id = filters.warehouse_id;
     if (filters.customer_id) where.customer_id = filters.customer_id;
+    if (filters.shift_id) where.shift_id = filters.shift_id; // New filter for shift_id
 
     if (filters.search) {
       where[db.Sequelize.Op.or] = [
@@ -60,6 +62,7 @@ class SaleRepository {
         { model: Branch, as: "branch" },
         { model: Warehouse, as: "warehouse" },
         { model: Customer, as: "customer" },
+        { model: Shift, as: "shift" }, // Include the associated shift
         {
           model: SaleItem,
           as: "saleItems",
@@ -101,6 +104,7 @@ class SaleRepository {
         { model: Branch, as: "branch" },
         { model: Warehouse, as: "warehouse" },
         { model: Customer, as: "customer" },
+        { model: Shift, as: "shift" }, // Include associated shift
         {
           model: SaleItem,
           as: "saleItems",
@@ -129,6 +133,21 @@ class SaleRepository {
     const sale = await this.getById(id);
     if (!sale) return null;
     return await sale.destroy();
+  }
+
+  // New method: Get the total sales for a given shift.
+  async getSalesTotalForShift(shiftId) {
+    const result = await Sale.findOne({
+      attributes: [
+        [
+          db.Sequelize.fn("SUM", db.Sequelize.col("total_amount")),
+          "totalSales",
+        ],
+      ],
+      where: { shift_id: shiftId },
+      raw: true,
+    });
+    return result.totalSales || 0;
   }
 }
 

@@ -110,6 +110,24 @@ class SaleController {
       });
     }
   }
+
+  async total(req, res) {
+    try {
+      const { shiftId } = req.params;
+      if (!shiftId) {
+        return res.status(400).json({ message: "shiftId is required" });
+      }
+      const totalSales = await saleService.getSalesTotalForShift(
+        req.params.shiftId
+      );
+      res.status(200).json({ totalSales });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error fetching total sales for shift",
+        error: error.message,
+      });
+    }
+  }
 }
 
 module.exports = new SaleController();
