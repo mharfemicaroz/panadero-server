@@ -93,7 +93,7 @@ class AuthController {
       }
 
       const newAccessToken = await authService.refreshToken(refreshToken);
-      res.status(200).json({ accessToken: newAccessToken });
+      res.status(200).json(newAccessToken);
     } catch (error) {
       res.status(401).json({ message: "Invalid or expired refresh token" });
     }
