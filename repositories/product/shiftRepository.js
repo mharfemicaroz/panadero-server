@@ -24,9 +24,15 @@ class ShiftRepository {
     if (filters.status) {
       where.status = filters.status;
     }
-    if (filters.start_time) {
-      // Filter shifts starting at or after a certain date.
-      where.start_time = { [Op.gte]: filters.start_time };
+    // Date filters
+    if (filters.start_date && filters.end_date) {
+      where.created_at = {
+        [db.Sequelize.Op.between]: [filters.start_date, filters.end_date],
+      };
+    } else if (filters.start_date) {
+      where.created_at = { [db.Sequelize.Op.gte]: filters.start_date };
+    } else if (filters.end_date) {
+      where.created_at = { [db.Sequelize.Op.lte]: filters.end_date };
     }
 
     return await Shift.findAndCountAll({
