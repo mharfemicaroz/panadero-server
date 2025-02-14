@@ -1,20 +1,15 @@
 const { Op } = require("sequelize");
 const db = global.requireV2("models");
 const Procurement = db.Procurement;
-const AbstractRepository = global.requireV2("base/AbstractRepository");
 
-class ProcurementRepository extends AbstractRepository {
-  constructor() {
-    super(Procurement);
-  }
-
+class ProcurementRepository {
   async listing({
     page = 1,
     limit = 10,
     filters = {},
     sortBy = "created_at",
     sortOrder = "DESC",
-  }) {
+  } = {}) {
     const offset = (page - 1) * limit;
     const where = {};
 
@@ -28,7 +23,7 @@ class ProcurementRepository extends AbstractRepository {
       };
     }
 
-    return Procurement.findAndCountAll({
+    return await Procurement.findAndCountAll({
       distinct: true,
       where,
       order: [[sortBy, sortOrder.toUpperCase()]],
@@ -43,11 +38,11 @@ class ProcurementRepository extends AbstractRepository {
   }
 
   async create(data) {
-    return Procurement.create(data);
+    return await Procurement.create(data);
   }
 
   async getById(id) {
-    return Procurement.findByPk(id, {
+    return await Procurement.findByPk(id, {
       include: [
         { association: "supplier" },
         { association: "item" },
@@ -56,16 +51,27 @@ class ProcurementRepository extends AbstractRepository {
     });
   }
 
-  async update(id, data) {
-    const record = await Procurement.findByPk(id);
-    if (!record) return null;
-    return record.update(data);
+  async update(id, procurementData) {
+    const procurement = await Procurement.findByPk(id);
+    if (procurement) {
+      return await procurement.update(procurementData);
+    }
+    return null;
   }
 
   async delete(id) {
-    const record = await Procurement.findByPk(id);
-    if (!record) return null;
-    return record.destroy();
+    const procurement = await Procurement.findByPk(id);
+    if (procurement) {
+      return await procurement.destroy();
+    }
+    return null;
+  }
+
+  // Mark a procurement as completed by updating its status
+  async complete(id) {
+    const procurement = await Procurement.findByPk(id);
+    if (!procurement) return null;
+    return await procurement.update({ status: "completed" });
   }
 }
 

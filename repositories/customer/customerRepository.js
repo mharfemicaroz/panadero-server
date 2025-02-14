@@ -7,18 +7,19 @@ const Customer = global.requireV2("models/customer/customer")(
 
 class CustomerRepository {
   /**
-   * List customers with pagination and optional filters.
+   * List customers with pagination, filters, and sorting.
    */
   async listing({
     page = 1,
     limit = 10,
     filters = {},
-    sortBy = "created_at",
-    sortOrder = "DESC",
-  }) {
+    sortBy = "created_at", // default sort column
+    sortOrder = "DESC", // default sort order
+  } = {}) {
     const offset = (page - 1) * limit;
     const where = {};
 
+    // Apply filters if provided
     if (filters.first_name) {
       where.first_name = { [Op.like]: `%${filters.first_name}%` };
     }
@@ -35,14 +36,13 @@ class CustomerRepository {
       where.is_active = filters.is_active;
     }
 
-    const result = await Customer.findAndCountAll({
+    return await Customer.findAndCountAll({
       distinct: true,
       where,
-      order: [[sortBy, sortOrder.toUpperCase()]],
+      order: [[sortBy, sortOrder.toUpperCase()]], // apply sorting here
       limit: parseInt(limit, 10),
       offset,
     });
-    return result;
   }
 
   /**
@@ -64,8 +64,10 @@ class CustomerRepository {
    */
   async update(id, data) {
     const customer = await Customer.findByPk(id);
-    if (!customer) return null;
-    return await customer.update(data);
+    if (customer) {
+      return await customer.update(data);
+    }
+    return null;
   }
 
   /**
@@ -73,8 +75,10 @@ class CustomerRepository {
    */
   async delete(id) {
     const customer = await Customer.findByPk(id);
-    if (!customer) return null;
-    return await customer.destroy();
+    if (customer) {
+      return await customer.destroy();
+    }
+    return null;
   }
 }
 
