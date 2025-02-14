@@ -67,7 +67,7 @@ class SaleService {
     const newSale = await saleRepository.createWithItems(saleData, itemsData);
     const finalSale = await saleRepository.getById(newSale.id);
 
-    // If the sale is completed, adjust the inventory.
+    // If the sale is completed, adjust the inventory and create cash register entry.
     if (newSale.status === "completed") {
       await this.processCompletedSale(finalSale);
     }
@@ -110,12 +110,13 @@ class SaleService {
   }
 
   /**
-   * Adjusts inventory for each sale item.
+   * Adjusts inventory for each sale item and creates a cash register entry.
    * Uses a transaction so that if any adjustment fails, the entire operation is rolled back.
    */
   async processCompletedSale(saleRecord) {
     const t = await db.sequelize.transaction();
     try {
+      // Adjust inventory for each sale item.
       for (const si of saleRecord.saleItems) {
         await inventoryService.adjustItemInWarehouse(
           si.item_id,
@@ -123,6 +124,19 @@ class SaleService {
           -si.quantity
         );
       }
+
+      // Auto-create a cash register entry for the completed sale.
+      const cashRegisterData = {
+        sale_id: saleRecord.id,
+        shift_id: saleRecord.shift_id || null,
+        cash: saleRecord.total_amount,
+        type: "in", // Cash coming in from the sale.
+        remarks: "Auto-created for completed sale",
+        transaction_date: new Date(),
+      };
+
+      await db.CashRegister.create(cashRegisterData, { transaction: t });
+
       await t.commit();
     } catch (err) {
       await t.rollback();
