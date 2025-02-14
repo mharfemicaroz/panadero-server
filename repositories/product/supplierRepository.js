@@ -1,31 +1,29 @@
 const { Op } = require("sequelize");
 const db = global.requireV2("models");
 const Supplier = db.Supplier;
-const AbstractRepository = global.requireV2("base/AbstractRepository");
 
-class SupplierRepository extends AbstractRepository {
-  constructor() {
-    super(Supplier);
-  }
-
+class SupplierRepository {
   async listing({
     page = 1,
     limit = 10,
     filters = {},
-    sortBy = "created_at",
-    sortOrder = "DESC",
-  }) {
+    sortBy = "created_at", // default sort column
+    sortOrder = "DESC", // default sort order
+  } = {}) {
     const offset = (page - 1) * limit;
     const where = {};
 
+    // Apply filter on name if provided.
     if (filters.name) {
       where.name = { [Op.like]: `%${filters.name}%` };
     }
+
+    // Apply filter on is_active if provided.
     if (filters.is_active !== undefined) {
       where.is_active = filters.is_active;
     }
 
-    return Supplier.findAndCountAll({
+    return await Supplier.findAndCountAll({
       distinct: true,
       where,
       order: [[sortBy, sortOrder.toUpperCase()]],
@@ -35,23 +33,27 @@ class SupplierRepository extends AbstractRepository {
   }
 
   async create(data) {
-    return Supplier.create(data);
+    return await Supplier.create(data);
   }
 
   async getById(id) {
-    return Supplier.findByPk(id);
+    return await Supplier.findByPk(id);
   }
 
-  async update(id, data) {
-    const record = await Supplier.findByPk(id);
-    if (!record) return null;
-    return record.update(data);
+  async update(id, supplierData) {
+    const supplier = await Supplier.findByPk(id);
+    if (supplier) {
+      return await supplier.update(supplierData);
+    }
+    return null;
   }
 
   async delete(id) {
-    const record = await Supplier.findByPk(id);
-    if (!record) return null;
-    return record.destroy();
+    const supplier = await Supplier.findByPk(id);
+    if (supplier) {
+      return await supplier.destroy();
+    }
+    return null;
   }
 }
 

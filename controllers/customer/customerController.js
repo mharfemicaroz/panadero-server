@@ -3,40 +3,53 @@ const customerService = global.requireV2("services/customer/customerService");
 class CustomerController {
   async list(req, res) {
     try {
+      // Extract parameters with defaults
       const {
-        page,
-        limit,
+        page = 1,
+        limit = 10,
+        sort = "created_at", // default column to sort by
+        order = "DESC", // default sort order
         first_name,
         last_name,
         email,
         phone,
         is_active,
-        sortBy,
-        sortOrder,
       } = req.query;
 
-      const filters = {
-        first_name,
-        last_name,
-        email,
-        phone,
-        is_active: is_active !== undefined ? is_active === "true" : undefined,
+      // Use req.query.filters if provided; otherwise start with empty object
+      let filters = req.query.filters || {};
+
+      // Add individual filter parameters to filters
+      if (first_name !== undefined) filters.first_name = first_name;
+      if (last_name !== undefined) filters.last_name = last_name;
+      if (email !== undefined) filters.email = email;
+      if (phone !== undefined) filters.phone = phone;
+      if (is_active !== undefined) filters.is_active = is_active === "true";
+
+      // Build query parameters
+      const queryParams = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+        filters,
+        sortBy: sort,
+        sortOrder: order,
       };
 
-      const queryParams = { page, limit, filters, sortBy, sortOrder };
+      // Get results from service
       const result = await customerService.getList(queryParams);
 
       res.status(200).json({
         total: result.count,
-        totalPages: Math.ceil(result.count / (limit || 10)),
-        currentPage: parseInt(page || 1, 10),
-        pageSize: parseInt(limit || 10, 10),
+        totalPages: Math.ceil(result.count / limit),
+        currentPage: parseInt(page, 10),
+        pageSize: parseInt(limit, 10),
         data: result.rows,
       });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error fetching customers", error: error.message });
+      res.status(500).json({
+        message: "Error fetching customers",
+        error: error.message,
+      });
     }
   }
 
@@ -93,9 +106,18 @@ class CustomerController {
         res.status(404).json({ message: "Customer not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error deleting customer", error: error.message });
+      // Handle foreign key constraint error (Sequelize example)
+      if (error.name === "SequelizeForeignKeyConstraintError") {
+        return res.status(409).json({
+          message:
+            "Cannot delete customer because it's referenced by other records",
+        });
+      }
+
+      res.status(500).json({
+        message: "Error deleting customer",
+        error: error.message,
+      });
     }
   }
 }
