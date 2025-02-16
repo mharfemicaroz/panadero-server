@@ -1,14 +1,40 @@
+const { Op } = require("sequelize");
 const db = global.requireV2("models");
 const User = db.User;
-const AbstractRepository = global.requireV2("base/AbstractRepository");
 
-class UserRepository extends AbstractRepository {
-  constructor() {
-    super(User);
-  }
+class UserRepository {
+  async listing({
+    page = 1,
+    limit = 10,
+    filters = {},
+    sortBy = "created_at", // default sort column
+    sortOrder = "DESC", // default sort order
+  } = {}) {
+    const offset = (page - 1) * limit;
+    const where = {};
 
-  async listing() {
-    return await User.findAll();
+    // Apply filter on name if provided
+    if (filters.username) {
+      where.username = { [Op.like]: `%${filters.username}%` };
+    }
+
+    // Apply filter on email if provided
+    if (filters.email) {
+      where.email = { [Op.like]: `%${filters.email}%` };
+    }
+
+    // Apply filter on is_active if provided
+    if (filters.is_active !== undefined) {
+      where.is_active = filters.is_active;
+    }
+
+    return await User.findAndCountAll({
+      distinct: true,
+      where,
+      order: [[sortBy, sortOrder.toUpperCase()]], // apply sorting here
+      limit: parseInt(limit, 10),
+      offset,
+    });
   }
 
   async create(data) {

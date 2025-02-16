@@ -1,9 +1,9 @@
 const userRepository = global.requireV2("repositories/user/userRepository");
 
 class UserService {
-  async getList() {
+  async getList(queryParams) {
     // Fetch all users
-    return await userRepository.getAll();
+    return await userRepository.listing(queryParams);
   }
 
   async create(data) {
@@ -14,6 +14,11 @@ class UserService {
   async getById(id) {
     // Fetch a user by their ID
     return await userRepository.getById(id);
+  }
+
+  async getByEmail(email) {
+    // Fetch a user by their ID
+    return await userRepository.getByEmail(email);
   }
 
   async alter(id, data) {
