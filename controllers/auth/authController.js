@@ -21,6 +21,8 @@ class AuthController {
           id: result.id,
           email: result.email,
           role: result.role,
+          first_name: result.first_name,
+          last_name: result.last_name,
         },
       });
     } catch (error) {
@@ -47,6 +49,8 @@ class AuthController {
           id: tokens.id,
           email: tokens.email,
           role: tokens.role,
+          first_name: result.first_name,
+          last_name: result.last_name,
           twoFAEnabled: tokens.twoFAEnabled,
         },
       });
