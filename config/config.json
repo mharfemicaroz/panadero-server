@@ -1,7 +1,7 @@
 {
     "development": {
         "username": "root",
-        "password": "Euler143!",
+        "password": "Fermat143!",
         "database": "panadero",
         "host": "aws-db.ct4yosk22krb.ap-southeast-2.rds.amazonaws.com",
         "dialect": "mysql",
