@@ -1,4 +1,5 @@
 const path = require("path");
+const { loadFaceApiModels } = require("./loadFaceApiModels");
 
 global.requireV2 = (relativePath) => {
   return require(path.join(process.cwd(), relativePath));
@@ -18,10 +19,15 @@ const productRoutes = require("./routes/product");
 const warehouseRoutes = require("./routes/warehouse/warehouseRoutes");
 const customerRoutes = require("./routes/customer/customerRoutes");
 const branchRoutes = require("./routes/branch/branchRoutes");
+const hrRoutes = require("./routes/hr");
 const db = require("./models");
 
 const app = express();
 const PORT = process.env.PORT;
+
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
 
 const corsOptions = {
   origin: ["http://localhost:5173", "https://panadero.area51.ph"],
@@ -48,6 +54,11 @@ app.use("/api/product", productRoutes);
 app.use("/api/warehouse", warehouseRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/branch", branchRoutes);
+app.use("/api/hr", hrRoutes);
+
+loadFaceApiModels()
+  .then(() => console.log("Face API models loaded successfully"))
+  .catch((err) => console.error("Face API models failed to load:", err));
 
 app.listen(PORT, () => {
   console.log(`Running at ${PORT}`);
