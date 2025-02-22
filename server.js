@@ -1,9 +1,12 @@
 const path = require("path");
-const { loadFaceApiModels } = require("./loadFaceApiModels");
 
 global.requireV2 = (relativePath) => {
   return require(path.join(process.cwd(), relativePath));
 };
+// Set the timezone to Philippine time (Asia/Manila)
+process.env.TZ = "Asia/Manila";
+
+const { loadFaceApiModels } = require("./loadFaceApiModels");
 
 // Load environment variables
 require("dotenv").config();
