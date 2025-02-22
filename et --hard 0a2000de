@@ -1,0 +1,80 @@
+[33m8d18378c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: reset: moving to HEAD~4
+[33m0a2000de[m HEAD@{1}: commit: Removed node_modules from tracking
+[33mededba22[m HEAD@{2}: commit: update server
+[33mabb9549d[m HEAD@{3}: commit: update server
+[33m57207dad[m HEAD@{4}: commit: update server
+[33m8d18378c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{5}: commit: update server
+[33m8a6afab7[m HEAD@{6}: commit: update server
+[33m8554ddc6[m HEAD@{7}: commit: update server
+[33md3ee9e82[m HEAD@{8}: commit: update server
+[33m3ef6b933[m HEAD@{9}: commit: update server
+[33m94ab15d5[m HEAD@{10}: commit: update some
+[33m61b2ade2[m HEAD@{11}: commit: change server
+[33m2194803a[m HEAD@{12}: commit: change server
+[33mbb88ed22[m HEAD@{13}: commit: change server
+[33m945341cb[m HEAD@{14}: commit: change server
+[33m5959ee8a[m HEAD@{15}: commit: change server
+[33m86fac71e[m HEAD@{16}: commit: change server
+[33m1d679338[m HEAD@{17}: commit: change server
+[33m7a82c315[m HEAD@{18}: commit: change server
+[33m9a85fd05[m HEAD@{19}: commit: change server
+[33m50d07ec9[m HEAD@{20}: commit: change server
+[33m4b0ac58f[m HEAD@{21}: commit: change server
+[33m31395cb7[m HEAD@{22}: commit: change server
+[33m9eeffae9[m HEAD@{23}: commit: change server
+[33mff5e67d7[m HEAD@{24}: commit: change server
+[33m408c9fad[m HEAD@{25}: commit: change server
+[33m9aebe526[m HEAD@{26}: pull origin main: Fast-forward
+[33m2e7d6ef9[m HEAD@{27}: commit (merge): change server
+[33m46aacb17[m HEAD@{28}: commit: change server
+[33mf5603d8f[m HEAD@{29}: commit: change server
+[33m405292e5[m HEAD@{30}: commit: change server
+[33m973f8b98[m HEAD@{31}: commit: change server
+[33md9504b18[m HEAD@{32}: commit: change server
+[33m7f75529e[m HEAD@{33}: commit: change server
+[33ma8f6a4fa[m HEAD@{34}: commit: change server
+[33m5f38a23d[m HEAD@{35}: commit: change yml
+[33m238a7b7f[m HEAD@{36}: commit: change yml
+[33mabb31bb1[m HEAD@{37}: commit: change yml
+[33m97e71b38[m HEAD@{38}: commit: change yml
+[33m805067ad[m HEAD@{39}: commit: change test
+[33mb818d56e[m HEAD@{40}: pull origin main: Fast-forward
+[33mdf08d7b4[m HEAD@{41}: commit: change .yml
+[33m13e56a27[m HEAD@{42}: commit: test
+[33md9d2df55[m HEAD@{43}: pull origin main: Fast-forward
+[33m4c04065a[m HEAD@{44}: commit: test
+[33m155410a4[m HEAD@{45}: commit: Stop tracking ftp-deploy.yml
+[33m524d5445[m HEAD@{46}: commit: Stop tracking ftp-deploy.yml
+[33mb4d077dd[m HEAD@{47}: commit: update yml
+[33m4f56a991[m HEAD@{48}: commit (merge): update server add stockmovements
+[33m32e4c632[m HEAD@{49}: commit: update server add stockmovements
+[33m4207fc7f[m HEAD@{50}: commit: add server
+[33mf77e0e31[m HEAD@{51}: commit: add server
+[33mae893d82[m HEAD@{52}: commit: add server
+[33m6a3c631f[m HEAD@{53}: commit: add server
+[33mdcc9150e[m HEAD@{54}: commit: Remove .env from repository tracking
+[33m4477f4d3[m HEAD@{55}: commit: updates server
+[33m0ec28984[m HEAD@{56}: commit: updates server test6
+[33m005ea3b7[m HEAD@{57}: commit: updates server test6
+[33mdff0f86c[m HEAD@{58}: commit: updates server test5
+[33m089f3175[m HEAD@{59}: commit: updates server test4
+[33mf6d4a8b4[m HEAD@{60}: commit: updates server test3
+[33mfff7d0e0[m HEAD@{61}: commit: updates server test2
+[33m8f52aea2[m HEAD@{62}: commit: updates server test
+[33m428b5657[m HEAD@{63}: commit: updates server yml
+[33m47a32c2b[m HEAD@{64}: commit: updates server case
+[33m3667aac6[m HEAD@{65}: commit: updates server
+[33m1f68ab02[m HEAD@{66}: commit: updates server
+[33m0dea9436[m HEAD@{67}: commit: updates server
+[33m48adafcd[m HEAD@{68}: pull origin main: Fast-forward
+[33me262c491[m HEAD@{69}: commit: updates server
+[33m8e5fd7f9[m HEAD@{70}: commit: updates server
+[33mcfb0c479[m HEAD@{71}: commit: updates server
+[33m2b8272ff[m HEAD@{72}: commit: updates server
+[33mbb12f023[m HEAD@{73}: commit: fix server
+[33m0f99fb9f[m HEAD@{74}: commit: updates server
+[33mf139d5d4[m HEAD@{75}: commit: update server use mysql
+[33mb0971293[m HEAD@{76}: commit: update corspolicy
+[33mc2079c7d[m HEAD@{77}: commit: update corspolicy
+[33ma8a26e48[m HEAD@{78}: Branch: renamed refs/heads/master to refs/heads/main
+[33ma8a26e48[m HEAD@{80}: commit (initial): first commit
