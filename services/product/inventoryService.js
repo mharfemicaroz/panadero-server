@@ -36,7 +36,12 @@ class InventoryService {
    * @returns {Object} The updated inventory record.
    * @throws {Error} If the inventory record is not found or the adjustment is invalid.
    */
-  async adjustQuantity(inventoryId, quantityChange, userId = null) {
+  async adjustQuantity(
+    inventoryId,
+    quantityChange,
+    userId = null,
+    note = null
+  ) {
     const record = await inventoryRepository.getById(inventoryId);
     if (!record) throw new Error("Inventory record not found");
 
@@ -72,6 +77,7 @@ class InventoryService {
       new_quantity: updatedRecord.current_quantity,
       warehouse_id: record.warehouse_id,
       user_id: userId,
+      note: note,
       // You can include additional fields (e.g., note) if needed.
     });
 
