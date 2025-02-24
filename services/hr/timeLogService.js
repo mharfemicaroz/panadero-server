@@ -36,23 +36,41 @@ class TimeLogService {
       log_time: now,
     });
 
-    // Get all logs for the day
-    const dailyLogs = await timeLogRepository.getDailyLogs(employeeId, today);
-
-    // Calculate total hours if this is a time_out log
+    // Only calculate total hours on a time_out log
     if (type === "time_out") {
-      let totalHours = 0;
-      let lastTimeIn = null;
+      // Fetch daily logs with an ample limit and ensure sorting by log_time
+      const dailyLogsResult = await timeLogRepository.getDailyLogs({
+        page: 1,
+        limit: 1000, // adjust limit as needed
+        filters: { employee_id: employeeId },
+        date: today,
+        sortBy: "log_time",
+        sortOrder: "ASC",
+      });
 
-      for (const log of dailyLogs) {
-        if (log.type === "time_in") {
-          lastTimeIn = log.log_time;
-        } else if (log.type === "time_out" && lastTimeIn) {
-          const duration = moment.duration(
-            moment(log.log_time).diff(moment(lastTimeIn))
+      // Sort logs in ascending order of log_time
+      const sortedLogs = dailyLogsResult.rows.sort(
+        (a, b) => new Date(a.log_time) - new Date(b.log_time)
+      );
+
+      // Find the first time_in entry
+      const firstTimeIn = sortedLogs.find((log) => log.type === "time_in");
+
+      let totalHours = 0;
+      if (firstTimeIn) {
+        // Find the first time_out entry that occurs after the first time_in
+        const firstTimeOut = sortedLogs.find(
+          (log) =>
+            log.type === "time_out" &&
+            new Date(log.log_time) > new Date(firstTimeIn.log_time)
+        );
+
+        if (firstTimeOut) {
+          totalHours = moment(firstTimeOut.log_time).diff(
+            moment(firstTimeIn.log_time),
+            "hours",
+            true
           );
-          totalHours += duration.asHours();
-          lastTimeIn = null;
         }
       }
 
@@ -68,7 +86,7 @@ class TimeLogService {
           date: today,
           status: totalHours >= 8 ? "present" : "half_day",
           total_hours: totalHours,
-          overtime_hours: Math.max(0, totalHours - 8), // Assuming 8 hours is standard workday
+          overtime_hours: Math.max(0, totalHours - 8),
         });
       } else {
         await attendance.update({
