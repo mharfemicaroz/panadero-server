@@ -6,42 +6,33 @@ class InventoryController {
    */
   async list(req, res) {
     try {
-      const {
-        page = 1,
-        limit = 10,
-        sort = "created_at",
-        order = "DESC",
-        item_id,
-        warehouse_id,
-      } = req.query;
+      // Extract pagination and sorting parameters with optional defaults
+      const { page, limit, sort, order } = req.query;
 
-      // Build filters
-      const filters = {
-        item_id: item_id ? parseInt(item_id, 10) : undefined,
-        warehouse_id: warehouse_id ? parseInt(warehouse_id, 10) : undefined,
-      };
+      // Use filters from req.query.filters if provided; otherwise, use an empty object.
+      const filters = req.query.filters || {};
 
-      // Query parameters including sorting
+      // Build query parameters including sorting information.
       const queryParams = {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
+        page,
+        limit,
         filters,
-        sortBy: sort,
-        sortOrder: order,
+        sortBy: sort, // will default to repository default if undefined
+        sortOrder: order, // will default to repository default if undefined
       };
 
       const result = await inventoryService.getList(queryParams);
 
       res.status(200).json({
         total: result.count,
-        totalPages: Math.ceil(result.count / limit),
-        currentPage: parseInt(page, 10),
-        pageSize: parseInt(limit, 10),
+        totalPages: limit ? Math.ceil(result.count / limit) : null,
+        currentPage: limit ? parseInt(page, 10) : null,
+        pageSize: limit ? parseInt(limit, 10) : null,
         data: result.rows,
       });
     } catch (error) {
       res.status(500).json({
-        message: "Error fetching inventory records",
+        message: "Error fetching sales",
         error: error.message,
       });
     }
@@ -136,7 +127,7 @@ class InventoryController {
    */
   async adjustQuantity(req, res) {
     try {
-      const { quantityChange } = req.body;
+      const { quantityChange, note } = req.body;
       if (typeof quantityChange !== "number") {
         return res
           .status(400)
@@ -147,7 +138,8 @@ class InventoryController {
       const updatedInventory = await inventoryService.adjustQuantity(
         req.params.id,
         quantityChange,
-        userId
+        userId,
+        note
       );
       if (!updatedInventory) {
         return res.status(404).json({ message: "Inventory record not found" });
