@@ -3,12 +3,28 @@ const attendanceService = global.requireV2("services/hr/attendanceService");
 class AttendanceController {
   async list(req, res) {
     try {
-      const result = await attendanceService.getList(req.query);
+      // Extract pagination and sorting parameters with optional defaults
+      const { page, limit, sort, order } = req.query;
+
+      // Use filters from req.query.filters if provided; otherwise, use an empty object.
+      const filters = req.query.filters || {};
+
+      // Build query parameters including sorting information.
+      const queryParams = {
+        page,
+        limit,
+        filters,
+        sortBy: sort, // will default to repository default if undefined
+        sortOrder: order, // will default to repository default if undefined
+      };
+
+      const result = await attendanceService.getList(queryParams);
+
       res.status(200).json({
         total: result.count,
-        totalPages: Math.ceil(result.count / (req.query.limit || 10)),
-        currentPage: parseInt(req.query.page || 1, 10),
-        pageSize: parseInt(req.query.limit || 10, 10),
+        totalPages: limit ? Math.ceil(result.count / limit) : null,
+        currentPage: limit ? parseInt(page, 10) : null,
+        pageSize: limit ? parseInt(limit, 10) : null,
         data: result.rows,
       });
     } catch (error) {

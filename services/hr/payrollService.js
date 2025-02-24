@@ -92,7 +92,7 @@ class PayrollService {
 
   async update(id, data) {
     return db.sequelize.transaction(async (t) => {
-      const payroll = await db.Payroll.findByPk(id);
+      let payroll = await db.Payroll.findByPk(id);
       if (!payroll) return null;
 
       // Update the payroll record
@@ -133,6 +133,17 @@ class PayrollService {
           );
         }
       }
+
+      // Re-fetch the payroll including the associated employee data
+      payroll = await db.Payroll.findByPk(id, {
+        include: [
+          {
+            model: db.Employee,
+            as: "employee",
+          },
+        ],
+        transaction: t,
+      });
 
       return payroll;
     });
