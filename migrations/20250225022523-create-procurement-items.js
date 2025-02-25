@@ -2,62 +2,55 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("procurements", {
+    await queryInterface.createTable("procurement_items", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      supplier_id: {
+      procurement_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "suppliers", // Name of the table (ensure it matches your suppliers table)
+          model: "procurements",
           key: "id",
         },
         onUpdate: "CASCADE",
-        onDelete: "RESTRICT",
+        onDelete: "CASCADE",
       },
-      warehouse_id: {
+      item_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "warehouses", // Ensure this matches your warehouses table
+          model: "items",
           key: "id",
         },
         onUpdate: "CASCADE",
-        onDelete: "RESTRICT",
+        onDelete: "CASCADE",
       },
-      procurement_date: {
-        type: Sequelize.DATE,
+      quantity: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: Sequelize.fn("NOW"),
       },
-      status: {
-        type: Sequelize.ENUM("pending", "received", "canceled"),
+      cost: {
+        type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
-        defaultValue: "pending",
-      },
-      remarks: {
-        type: Sequelize.TEXT,
-        allowNull: true,
       },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("NOW"),
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.fn("NOW"),
+        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    // If you need to drop ENUM types manually, do so here
-    await queryInterface.dropTable("procurements");
+    await queryInterface.dropTable("procurement_items");
   },
 };

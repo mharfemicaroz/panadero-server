@@ -18,6 +18,7 @@ const SaleItem = require("./saleItem");
 const StockMovement = require("./stockMovement");
 const Shift = require("./shift");
 const CashRegister = require("./cashRegister");
+const ProcurementItem = require("./procurementItem");
 
 module.exports = (sequelize, DataTypes) => {
   const models = {
@@ -41,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     StockMovement: StockMovement(sequelize, DataTypes),
     Shift: Shift(sequelize, DataTypes),
     CashRegister: CashRegister(sequelize, DataTypes),
+    ProcurementItem: ProcurementItem(sequelize, DataTypes),
   };
 
   return models;

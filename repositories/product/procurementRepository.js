@@ -1,3 +1,4 @@
+// repositories/product/procurementRepository.js
 const { Op } = require("sequelize");
 const db = global.requireV2("models");
 const Procurement = db.Procurement;
@@ -14,7 +15,6 @@ class ProcurementRepository {
     const where = {};
 
     if (filters.supplier_id) where.supplier_id = filters.supplier_id;
-    if (filters.item_id) where.item_id = filters.item_id;
     if (filters.warehouse_id) where.warehouse_id = filters.warehouse_id;
     if (filters.status) where.status = filters.status;
     if (filters.start_date && filters.end_date) {
@@ -31,8 +31,11 @@ class ProcurementRepository {
       offset,
       include: [
         { association: "supplier" },
-        { association: "item" },
         { association: "warehouse" },
+        {
+          association: "items",
+          include: [{ association: "item" }],
+        },
       ],
     });
   }
@@ -45,8 +48,11 @@ class ProcurementRepository {
     return await Procurement.findByPk(id, {
       include: [
         { association: "supplier" },
-        { association: "item" },
         { association: "warehouse" },
+        {
+          association: "items",
+          include: [{ association: "item" }],
+        },
       ],
     });
   }
@@ -67,11 +73,26 @@ class ProcurementRepository {
     return null;
   }
 
+  // New method to create a procurement item
+  async createProcurementItem(data) {
+    const ProcurementItem = db.ProcurementItem;
+    return await ProcurementItem.create(data);
+  }
+
   // Mark a procurement as completed by updating its status
   async complete(id) {
-    const procurement = await Procurement.findByPk(id);
+    const procurement = await Procurement.findByPk(id, {
+      include: [
+        { association: "supplier" },
+        { association: "warehouse" },
+        {
+          association: "items",
+          include: [{ association: "item" }],
+        },
+      ],
+    });
     if (!procurement) return null;
-    return await procurement.update({ status: "completed" });
+    return await procurement.update({ status: "received" });
   }
 }
 

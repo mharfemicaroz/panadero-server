@@ -1,3 +1,4 @@
+// services/product/procurementService.js
 const procurementRepository = global.requireV2(
   "repositories/product/procurementRepository"
 );
@@ -9,7 +10,23 @@ class ProcurementService {
   }
 
   async create(data) {
-    return procurementRepository.create(data);
+    const { items, ...procurementData } = data;
+    const procurementRecord = await procurementRepository.create(
+      procurementData
+    );
+    if (items && items.length > 0) {
+      for (const item of items) {
+        console.log("Creating procurement item with:", item);
+        // Here, we expect item.item_id to be defined.
+        await procurementRepository.createProcurementItem({
+          procurement_id: procurementRecord.id,
+          item_id: item.item_id, // This should be 8 as logged
+          quantity: item.quantity,
+          cost: item.purchase_cost,
+        });
+      }
+    }
+    return await procurementRepository.getById(procurementRecord.id);
   }
 
   async getById(id) {
@@ -20,8 +37,9 @@ class ProcurementService {
     const existing = await procurementRepository.getById(id);
     if (!existing) return null;
     const updated = await procurementRepository.update(id, data);
+    // If the status is changed to "received" from a non-received state, process the procurement.
     if (existing.status !== "received" && data.status === "received") {
-      await this.processProcurement(updated);
+      await this.processProcurement(await procurementRepository.getById(id));
     }
     return updated;
   }
@@ -32,12 +50,14 @@ class ProcurementService {
 
   async processProcurement(procurementRecord) {
     if (procurementRecord.status !== "received") return;
-    const { item_id, warehouse_id, quantity } = procurementRecord;
-    await inventoryService.adjustItemInWarehouse(
-      item_id,
-      warehouse_id,
-      +quantity
-    );
+    // For each procurement item, adjust the inventory.
+    for (const procItem of procurementRecord.items) {
+      await inventoryService.adjustItemInWarehouse(
+        procItem.item_id,
+        procurementRecord.warehouse_id,
+        +procItem.quantity
+      );
+    }
   }
 
   async completeProcurement(id) {
@@ -47,8 +67,10 @@ class ProcurementService {
     const updated = await procurementRepository.update(id, {
       status: "received",
     });
-    await this.processProcurement(updated);
-    return updated;
+    // Re-fetch the record with items and process the procurement.
+    const fullRecord = await procurementRepository.getById(id);
+    await this.processProcurement(fullRecord);
+    return fullRecord;
   }
 }
 
