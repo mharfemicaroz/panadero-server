@@ -1,3 +1,4 @@
+// models/Procurement.js
 "use strict";
 
 module.exports = (sequelize, DataTypes) => {
@@ -14,16 +15,6 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: "CASCADE",
         onDelete: "RESTRICT",
       },
-      item_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "items",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "RESTRICT",
-      },
       warehouse_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -33,14 +24,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         onUpdate: "CASCADE",
         onDelete: "RESTRICT",
-      },
-      quantity: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      cost: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
       },
       procurement_date: {
         type: DataTypes.DATE,
@@ -71,10 +54,14 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "supplier_id",
       as: "supplier",
     });
-    Procurement.belongsTo(models.Item, { foreignKey: "item_id", as: "item" });
     Procurement.belongsTo(models.Warehouse, {
       foreignKey: "warehouse_id",
       as: "warehouse",
+    });
+    // New association: a procurement can have many items
+    Procurement.hasMany(models.ProcurementItem, {
+      foreignKey: "procurement_id",
+      as: "items",
     });
   };
 
