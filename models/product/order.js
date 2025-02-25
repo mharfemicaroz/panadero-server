@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: DataTypes.NOW,
       },
+      remarks: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
     },
     {
       tableName: "orders",
@@ -42,6 +46,7 @@ module.exports = (sequelize, DataTypes) => {
       updatedAt: "updated_at",
     }
   );
+
   Order.associate = function (models) {
     Order.belongsTo(models.User, { foreignKey: "user_id", as: "user" });
     Order.belongsTo(models.Customer, {
@@ -53,5 +58,6 @@ module.exports = (sequelize, DataTypes) => {
       as: "orderItems",
     });
   };
+
   return Order;
 };

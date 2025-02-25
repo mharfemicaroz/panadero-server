@@ -7,20 +7,15 @@ module.exports = (sequelize, DataTypes) => {
       order_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-          model: "orders",
-          key: "id",
-        },
+        references: { model: "orders", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
       item_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-          model: "items",
-          key: "id",
-        },
+        field: "item_id", // explicitly set column name for consistency
+        references: { model: "items", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "RESTRICT",
       },
@@ -48,14 +43,8 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   OrderItem.associate = function (models) {
-    OrderItem.belongsTo(models.Order, {
-      foreignKey: "order_id",
-      as: "order",
-    });
-    OrderItem.belongsTo(models.Item, {
-      foreignKey: "item_id",
-      as: "item",
-    });
+    OrderItem.belongsTo(models.Order, { foreignKey: "order_id", as: "order" });
+    OrderItem.belongsTo(models.Item, { foreignKey: "item_id", as: "item" });
   };
 
   return OrderItem;

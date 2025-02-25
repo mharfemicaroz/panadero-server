@@ -4,28 +4,22 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("orders", {
       id: {
-        type: Sequelize.INTEGER,
+        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
+        type: Sequelize.INTEGER,
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "users",
-          key: "id",
-        },
+        references: { model: "users", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "RESTRICT",
       },
       customer_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        references: {
-          model: "customers",
-          key: "id",
-        },
+        references: { model: "customers", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
@@ -42,22 +36,27 @@ module.exports = {
       order_date: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW,
+        defaultValue: Sequelize.fn("NOW"),
+      },
+      remarks: {
+        type: Sequelize.TEXT,
+        allowNull: true,
       },
       created_at: {
-        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("NOW"),
       },
       updated_at: {
-        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("NOW"),
       },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable("orders");
+    // Optionally, you may need to drop the ENUM type here if your dialect requires it.
   },
 };

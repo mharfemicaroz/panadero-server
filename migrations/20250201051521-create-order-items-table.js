@@ -4,28 +4,23 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("order_items", {
       id: {
-        type: Sequelize.INTEGER,
+        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
+        type: Sequelize.INTEGER,
       },
       order_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "orders",
-          key: "id",
-        },
+        references: { model: "orders", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
       item_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "items",
-          key: "id",
-        },
+        field: "item_id", // Explicitly set the column name
+        references: { model: "items", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "RESTRICT",
       },
@@ -43,14 +38,14 @@ module.exports = {
         defaultValue: 0.0,
       },
       created_at: {
-        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("NOW"),
       },
       updated_at: {
-        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.NOW,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("NOW"),
       },
     });
   },
