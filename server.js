@@ -1,36 +1,51 @@
-const path = require("path");
+"use strict";
 
-global.requireV2 = (relativePath) => {
-  return require(path.join(process.cwd(), relativePath));
-};
-// Set the timezone to Philippine time (Asia/Manila)
-process.env.TZ = "Asia/Manila";
-
-const { loadFaceApiModels } = require("./loadFaceApiModels");
-
-// Load environment variables
+// Load environment variables and module alias
 require("dotenv").config();
 require("module-alias/register");
 
-// server.js
+// Set timezone
+process.env.TZ = "Asia/Manila";
+
+// Core & External Dependencies
+const path = require("path");
 const express = require("express");
-const bodyParser = require("body-parser");
+const morgan = require("morgan");
 const cors = require("cors");
-const useroutes = require("./routes/user/userRoutes");
+const bodyParser = require("body-parser");
+const xssClean = require("xss-clean");
+
+// Global Require Helper
+global.requireV2 = (relativePath) => {
+  return require(path.join(process.cwd(), relativePath));
+};
+
+// Local Dependencies
+const securityHeaders = global.requireV2("middleware/securityHeaders");
+const { loadFaceApiModels } = require("./loadFaceApiModels");
+const db = require("./models");
+
+// Routes
 const authRoutes = require("./routes/auth/authRoutes");
+const userRoutes = require("./routes/user/userRoutes");
 const productRoutes = require("./routes/product");
 const warehouseRoutes = require("./routes/warehouse/warehouseRoutes");
 const customerRoutes = require("./routes/customer/customerRoutes");
 const branchRoutes = require("./routes/branch/branchRoutes");
 const hrRoutes = require("./routes/hr");
-const db = require("./models");
 
+// Initialize
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
+// Global Middlewares
+app.use(xssClean());
+app.use(securityHeaders());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(morgan("dev"));
+app.use(bodyParser.json());
 
 const corsOptions = {
   origin: ["http://localhost:5173", "https://panadero.area51.ph"],
@@ -38,10 +53,9 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
-
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
 
+// Database Sync
 (async () => {
   try {
     await db.sequelize.sync({ force: false });
@@ -51,18 +65,21 @@ app.use(bodyParser.json());
   }
 })();
 
+// Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/users", useroutes);
+app.use("/api/users", userRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/warehouse", warehouseRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/branch", branchRoutes);
 app.use("/api/hr", hrRoutes);
 
+// Face API Models
 loadFaceApiModels()
   .then(() => console.log("Face API models loaded successfully"))
   .catch((err) => console.error("Face API models failed to load:", err));
 
+// Start Server
 app.listen(PORT, () => {
-  console.log(`Running at ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

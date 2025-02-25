@@ -1,21 +1,30 @@
 const express = require("express");
 const router = express.Router();
 const userController = global.requireV2("controllers/user/userController");
-const authMiddleware = global.requireV2("middleware/authMiddleware"); // Import the authMiddleware
+const authMiddleware = global.requireV2("middleware/authMiddleware");
+const roleCheck = global.requireV2("middleware/roleCheck");
+const throttle = global.requireV2("middleware/throttle");
+const { createUserRules, updateUserRules } = global.requireV2(
+  "validations/userValidation"
+);
+const { validate } = global.requireV2("middleware/validate");
 
-// Get all users (protected route)
 router.get("/", authMiddleware, userController.list);
-
-// Create a new user (no authentication required for registration)
-router.post("/", userController.create);
-
-// Get user by ID (protected route)
+router.post("/", createUserRules, validate, userController.create);
 router.get("/:id", authMiddleware, userController.getById);
-
-// Update user (protected route)
-router.put("/:id", authMiddleware, userController.update);
-
-// Delete user (protected route)
-router.delete("/:id", authMiddleware, userController.delete);
+router.put(
+  "/:id",
+  authMiddleware,
+  updateUserRules,
+  validate,
+  userController.update
+);
+router.delete(
+  "/:id",
+  authMiddleware,
+  roleCheck(["admin", "manager"]),
+  throttle(10, 60 * 60 * 1000),
+  userController.delete
+);
 
 module.exports = router;
