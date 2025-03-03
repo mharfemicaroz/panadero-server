@@ -33,7 +33,6 @@ const warehouseRoutes = require("./routes/warehouse/warehouseRoutes");
 const customerRoutes = require("./routes/customer/customerRoutes");
 const branchRoutes = require("./routes/branch/branchRoutes");
 const hrRoutes = require("./routes/hr");
-const productivityRoutes = require("./routes/productivity");
 
 // Initialize
 const app = express();
