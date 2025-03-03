@@ -35,14 +35,4 @@ jobs:
           port: ${{ secrets.SSH_PORT }} # Set this secret to the correct port (e.g., 22)
           script: |
             # (Optionally) Activate the virtual environment for your Node version management
-            source /home/areawcmk/nodevenv/apiv4/18/bin/activate
-            # Change directory to your Node app folder
-            cd /home/areawcmk/apiv4
-            # Stop the existing Node.js process if running
-            pm2 stop server || echo "PM2 process not found, skipping stop"
-
-            # Start or restart the Node.js app with PM2
-            pm2 start server.js --name server --update-env
-
-            # Save PM2 process list so it auto-restarts on reboot
-            pm2 save
+            cloudlinux-selector restart --json --interpreter nodejs --user areawcmk --app-root /home/areawcmk/apiv4

@@ -24,7 +24,7 @@ router.post(
 
 router.post(
   "/login",
-  throttle(10, 15 * 60 * 1000), // e.g., allow 10 login attempts per 15 minutes
+  throttle(100, 15 * 60 * 1000), // e.g., allow 10 login attempts per 15 minutes
   loginRules,
   validate,
   authController.login
