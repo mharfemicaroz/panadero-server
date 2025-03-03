@@ -31,6 +31,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         defaultValue: 0,
       },
+      night_differential_hours: {
+        type: DataTypes.DECIMAL(5, 2),
+        allowNull: true,
+        defaultValue: 0,
+      },
+      is_holiday: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
       remarks: {
         type: DataTypes.TEXT,
         allowNull: true,

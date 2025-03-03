@@ -181,17 +181,37 @@ class PayrollService {
         endDate
       );
 
-    // Calculate totals from attendance records
-    const { totalDays, totalHours, overtimeHours } =
-      this._calculateFromAttendance(attendanceRecords);
+    // Calculate totals from attendance records including night differential and holiday metrics
+    const {
+      totalDays,
+      totalHours,
+      overtimeHours,
+      nightDifferentialHours,
+      holidayDays,
+    } = this._calculateFromAttendance(attendanceRecords);
 
-    // Calculate basic pay
-    const basicPay = Number(totalDays) * Number(salary.daily_rate);
+    // Separate regular and holiday days
+    const regularDays = totalDays - holidayDays;
+
+    // Calculate basic pay:
+    // - Regular days are paid at the standard daily rate.
+    // - Holiday days use a holiday multiplier.
+    const holidayMultiplier = salary.holiday_rate || 2.0; // default to 2x if not provided
+    const basicPayRegular = regularDays * Number(salary.daily_rate);
+    const basicPayHoliday =
+      holidayDays * Number(salary.daily_rate) * holidayMultiplier;
+    const basicPay = basicPayRegular + basicPayHoliday;
 
     // Calculate overtime pay
     const overtimePay = Number(overtimeHours) * Number(salary.overtime_rate);
 
-    // Get and calculate deductions and allowances
+    // Calculate night differential pay
+    const nightDifferentialRate =
+      salary.night_differential_rate || Number(salary.daily_rate) * 0.1;
+    const nightDifferentialPay =
+      Number(nightDifferentialHours) * Number(nightDifferentialRate);
+
+    // Get and calculate deductions and allowances based on the basic pay
     const { deductionsTotal, deductionItems } = await this._calculateDeductions(
       employeeId,
       basicPay
@@ -201,17 +221,17 @@ class PayrollService {
       basicPay
     );
 
-    // Calculate gross salary
+    // Calculate gross salary including night differential and allowances
     const grossSalary =
-      Number(basicPay) + Number(overtimePay) + Number(allowancesTotal);
+      basicPay + overtimePay + nightDifferentialPay + Number(allowancesTotal);
 
-    // Calculate tax
+    // Calculate tax deduction
     const taxDeduction = this._calculateTax(
       grossSalary,
       Number(salary.tax_rate)
     );
 
-    // Calculate net salary
+    // Calculate net salary after deductions and tax
     const netSalary = grossSalary - deductionsTotal - taxDeduction;
 
     return {
@@ -223,8 +243,11 @@ class PayrollService {
       total_days_worked: Number(totalDays),
       total_hours_worked: Number(totalHours),
       overtime_hours: Number(overtimeHours),
+      night_differential_hours: Number(nightDifferentialHours),
       gross_salary: Number(grossSalary.toFixed(2)),
       overtime_pay: Number(overtimePay.toFixed(2)),
+      night_differential_pay: Number(nightDifferentialPay.toFixed(2)),
+      basic_pay: Number(basicPay.toFixed(2)),
       allowances: Number(allowancesTotal.toFixed(2)),
       deductions: Number(deductionsTotal.toFixed(2)),
       tax_deduction: Number(taxDeduction.toFixed(2)),
@@ -236,22 +259,33 @@ class PayrollService {
   }
 
   _calculateFromAttendance(attendanceRecords) {
+    // Initialize totals including extra metrics for night differential and holiday days.
     const totals = attendanceRecords.reduce(
       (acc, record) => {
-        acc.totalDays +=
+        // Determine full or half-day work value.
+        const dayValue =
           record.status === "present"
             ? 1
             : record.status === "half_day"
             ? 0.5
             : 0;
+        acc.totalDays += dayValue;
         acc.totalHours += Number(record.total_hours || 0);
         acc.overtimeHours += Number(record.overtime_hours || 0);
+        acc.nightDifferentialHours += Number(
+          record.night_differential_hours || 0
+        );
+        if (record.is_holiday) {
+          acc.holidayDays += dayValue;
+        }
         return acc;
       },
       {
         totalDays: 0,
         totalHours: 0,
         overtimeHours: 0,
+        nightDifferentialHours: 0,
+        holidayDays: 0,
       }
     );
 
@@ -259,6 +293,8 @@ class PayrollService {
       totalDays: Number(totals.totalDays),
       totalHours: Number(totals.totalHours),
       overtimeHours: Number(totals.overtimeHours),
+      nightDifferentialHours: Number(totals.nightDifferentialHours),
+      holidayDays: Number(totals.holidayDays),
     };
   }
 

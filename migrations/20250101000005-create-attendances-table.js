@@ -1,18 +1,18 @@
 "use strict";
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("attendances", {
       id: {
-        type: Sequelize.INTEGER,
+        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
+        type: Sequelize.INTEGER,
       },
       employee_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "employees",
+          model: "employees", // Make sure this matches your employees table name
           key: "id",
         },
         onUpdate: "CASCADE",
@@ -36,6 +36,15 @@ module.exports = {
         allowNull: true,
         defaultValue: 0,
       },
+      night_differential_hours: {
+        type: Sequelize.DECIMAL(5, 2),
+        allowNull: true,
+        defaultValue: 0,
+      },
+      is_holiday: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
       remarks: {
         type: Sequelize.TEXT,
         allowNull: true,
@@ -45,24 +54,15 @@ module.exports = {
         defaultValue: true,
       },
       created_at: {
-        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("NOW"),
       },
       updated_at: {
-        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal(
-          "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
-        ),
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn("NOW"),
       },
-    });
-
-    // Add a unique constraint to prevent multiple attendance records for the same employee on the same date
-    await queryInterface.addConstraint("attendances", {
-      fields: ["employee_id", "date"],
-      type: "unique",
-      name: "unique_employee_date_attendance",
     });
   },
 

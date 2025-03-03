@@ -33,6 +33,7 @@ const warehouseRoutes = require("./routes/warehouse/warehouseRoutes");
 const customerRoutes = require("./routes/customer/customerRoutes");
 const branchRoutes = require("./routes/branch/branchRoutes");
 const hrRoutes = require("./routes/hr");
+const productivityRoutes = require("./routes/productivity");
 
 // Initialize
 const app = express();
@@ -73,6 +74,7 @@ app.use("/api/warehouse", warehouseRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/branch", branchRoutes);
 app.use("/api/hr", hrRoutes);
+app.use("/api/productivity", productivityRoutes);
 
 // Face API Models
 loadFaceApiModels()

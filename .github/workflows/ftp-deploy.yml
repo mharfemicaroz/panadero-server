@@ -24,7 +24,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: "./"
           server-dir: "/"
-          timeout: 180000 # Timeout set to 3 minutes
 
       # Restart Node App via SSH
       - name: Restart Node App via SSH
