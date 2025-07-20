@@ -11,6 +11,7 @@ class ProcurementController {
         limit,
         sort,
         order,
+        user_id,
         supplier_id,
         item_id,
         warehouse_id,
@@ -23,6 +24,9 @@ class ProcurementController {
       let filters = req.query.filters || {};
 
       // Apply additional filters if provided.
+      if (user_id) {
+        filters.user_id = parseInt(user_id, 10);
+      }
       if (supplier_id) {
         filters.supplier_id = parseInt(supplier_id, 10);
       }

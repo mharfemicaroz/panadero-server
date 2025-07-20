@@ -88,7 +88,13 @@ class InventoryService {
    * Adjusts inventory for a given item in a specified warehouse.
    * Finds the inventory record by item_id and warehouse_id, then adjusts its quantity.
    */
-  async adjustItemInWarehouse(item_id, warehouse_id, quantityChange) {
+  async adjustItemInWarehouse(
+    item_id,
+    warehouse_id,
+    quantityChange,
+    userId = null,
+    note = null
+  ) {
     const record = await inventoryRepository.findByItemAndWarehouse(
       item_id,
       warehouse_id
@@ -98,7 +104,7 @@ class InventoryService {
         `No inventory found for item_id=${item_id}, warehouse_id=${warehouse_id}`
       );
     }
-    return this.adjustQuantity(record.id, quantityChange);
+    return this.adjustQuantity(record.id, quantityChange, userId, note);
   }
 
   /**

@@ -1,9 +1,9 @@
 {
     "development": {
         "username": "root",
-        "password": "Fermat143!",
+        "password": "Euler143!",
         "database": "panadero",
-        "host": "aws-db.ct4yosk22krb.ap-southeast-2.rds.amazonaws.com",
+        "host": "34.126.66.14",
         "dialect": "mysql",
         "port": 3306
     },
@@ -11,15 +11,15 @@
         "username": "root",
         "password": "Euler143!",
         "database": "panadero",
-        "host": "localhost",
+        "host": "34.126.66.14",
         "dialect": "mysql",
         "port": 3306
     },
     "production": {
         "username": "root",
-        "password": "",
-        "database": "panadero_prod",
-        "host": "localhost",
+        "password": "Euler143!",
+        "database": "panadero",
+        "host": "34.126.66.14",
         "dialect": "mysql",
         "port": 3306
     }

@@ -9,23 +9,24 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      user_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "users", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "RESTRICT",
+      },
       supplier_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "suppliers", // Name of the table (ensure it matches your suppliers table)
-          key: "id",
-        },
+        references: { model: "suppliers", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "RESTRICT",
       },
       warehouse_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "warehouses", // Ensure this matches your warehouses table
-          key: "id",
-        },
+        references: { model: "warehouses", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "RESTRICT",
       },
@@ -57,7 +58,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    // If you need to drop ENUM types manually, do so here
     await queryInterface.dropTable("procurements");
   },
 };

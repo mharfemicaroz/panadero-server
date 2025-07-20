@@ -1,6 +1,7 @@
 const orderRepository = global.requireV2(
   "repositories/product/orderRepository"
 );
+const saleRepository = global.requireV2("repositories/product/saleRepository");
 const inventoryService = require("./inventoryService");
 const db = global.requireV2("models");
 
@@ -17,8 +18,6 @@ class OrderService {
     // Create associated order items.
     if (items && items.length > 0) {
       for (const item of items) {
-        console.log("Creating order item with:", item);
-        // Expect orderRepository.createOrderItem to create a single order item.
         await orderRepository.createOrderItem({
           order_id: orderRecord.id,
           item_id: item.item_id,
@@ -43,7 +42,7 @@ class OrderService {
     // When the status changes to "completed", process the order.
     if (existing.status !== "completed" && data.status === "completed") {
       const finalOrder = await orderRepository.getById(id);
-      await this.processCompletedOrder(finalOrder);
+      await this.completeOrderTransaction(finalOrder);
     }
     return updated;
   }
@@ -52,23 +51,22 @@ class OrderService {
     return await orderRepository.delete(id);
   }
 
-  // Deduct the ordered quantities from inventory.
-  async processCompletedOrder(orderRecord) {
-    // Begin a transaction so that inventory adjustments are atomic.
+  // Wrap inventory adjustments and sale record creation in a single transaction.
+  async completeOrderTransaction(orderRecord) {
     const t = await db.sequelize.transaction();
     try {
+      // Adjust inventory for each order item.
       for (const oi of orderRecord.orderItems) {
         await inventoryService.adjustItemInWarehouse(
           oi.item_id,
-          // Deduct items from inventory.
-          // Assume the warehouse ID is retrieved from orderRecord.user.warehouse_id
-          // or use a default value (e.g. 1) if not defined.
           orderRecord.user && orderRecord.user.warehouse_id
             ? orderRecord.user.warehouse_id
             : 1,
           -oi.quantity
         );
       }
+      // Create a sale record from the completed order.
+      await this.createSaleRecordFromOrder(orderRecord, t);
       await t.commit();
     } catch (err) {
       await t.rollback();
@@ -76,16 +74,56 @@ class OrderService {
     }
   }
 
+  // Public method to complete an order.
   async completeOrder(id) {
     const order = await orderRepository.getById(id);
     if (!order) return null;
     if (order.status === "completed") return order;
-    const updatedOrder = await orderRepository.update(id, {
-      status: "completed",
-    });
+    // Update order status.
+    await orderRepository.update(id, { status: "completed" });
     const finalOrder = await orderRepository.getById(id);
-    await this.processCompletedOrder(finalOrder);
-    return updatedOrder;
+    // Process inventory adjustments and sale record creation.
+    await this.completeOrderTransaction(finalOrder);
+    return finalOrder;
+  }
+
+  // Helper method: Map order data to sale data and create the sale record.
+  async createSaleRecordFromOrder(orderRecord, transaction) {
+    const saleData = {
+      user_id: orderRecord.user_id,
+      branch_id:
+        orderRecord.user && orderRecord.user.branch_id
+          ? orderRecord.user.branch_id
+          : 1, // Adjust default as needed.
+      warehouse_id:
+        orderRecord.user && orderRecord.user.warehouse_id
+          ? orderRecord.user.warehouse_id
+          : 1,
+      customer_id: orderRecord.customer_id || null,
+      customer_name: orderRecord.customer ? orderRecord.customer.name : null,
+      status: "completed",
+      sale_date: new Date(),
+      total_amount: orderRecord.total_amount,
+      discount_total: 0, // Adjust if you have discounts.
+      remarks: orderRecord.remarks,
+      payment_type: "Cash", // Or map based on your order/payment logic.
+      // Optionally include shift_id if available:
+      shift_id:
+        orderRecord.user && orderRecord.user.shift_id
+          ? orderRecord.user.shift_id
+          : null,
+    };
+
+    // Map order items to sale items.
+    const itemsData = orderRecord.orderItems.map((oi) => ({
+      item_id: oi.item_id,
+      quantity: oi.quantity,
+      price: oi.price,
+      discount: oi.discount || 0,
+    }));
+
+    // Use saleRepository to create the sale record with its items.
+    await saleRepository.createWithItems(saleData, itemsData, { transaction });
   }
 }
 

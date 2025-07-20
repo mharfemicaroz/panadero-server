@@ -55,7 +55,9 @@ class ProcurementService {
       await inventoryService.adjustItemInWarehouse(
         procItem.item_id,
         procurementRecord.warehouse_id,
-        +procItem.quantity
+        +procItem.quantity,
+        procurementRecord.user_id,
+        "purchased"
       );
     }
   }

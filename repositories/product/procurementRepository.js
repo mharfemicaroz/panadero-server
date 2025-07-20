@@ -2,6 +2,7 @@
 const { Op } = require("sequelize");
 const db = global.requireV2("models");
 const Procurement = db.Procurement;
+const User = db.User;
 
 class ProcurementRepository {
   async listing({
@@ -14,6 +15,7 @@ class ProcurementRepository {
     const offset = (page - 1) * limit;
     const where = {};
 
+    if (filters.user_id) where.user_id = filters.user_id;
     if (filters.supplier_id) where.supplier_id = filters.supplier_id;
     if (filters.warehouse_id) where.warehouse_id = filters.warehouse_id;
     if (filters.status) where.status = filters.status;
@@ -30,6 +32,7 @@ class ProcurementRepository {
       limit: parseInt(limit, 10),
       offset,
       include: [
+        { association: "user", attributes: ["id", "username"] },
         { association: "supplier" },
         { association: "warehouse" },
         {
@@ -47,6 +50,7 @@ class ProcurementRepository {
   async getById(id) {
     return await Procurement.findByPk(id, {
       include: [
+        { association: "user", attributes: ["id", "username"] },
         { association: "supplier" },
         { association: "warehouse" },
         {
@@ -83,6 +87,7 @@ class ProcurementRepository {
   async complete(id) {
     const procurement = await Procurement.findByPk(id, {
       include: [
+        { association: "user", attributes: ["id", "username"] },
         { association: "supplier" },
         { association: "warehouse" },
         {

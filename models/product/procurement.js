@@ -5,6 +5,13 @@ module.exports = (sequelize, DataTypes) => {
   const Procurement = sequelize.define(
     "Procurement",
     {
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: { model: "users", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "RESTRICT",
+      },
       supplier_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -50,6 +57,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Procurement.associate = function (models) {
+    Procurement.belongsTo(models.User, { foreignKey: "user_id", as: "user" });
     Procurement.belongsTo(models.Supplier, {
       foreignKey: "supplier_id",
       as: "supplier",

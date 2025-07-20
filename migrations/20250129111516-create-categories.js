@@ -24,9 +24,9 @@ module.exports = {
       },
       categoryGroupId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true, // Updated to allow null
         references: {
-          model: "category_groups", // Ensure the table name matches the previous migration
+          model: "category_groups", // Ensure the table name is correct
           key: "id",
         },
         onUpdate: "CASCADE",

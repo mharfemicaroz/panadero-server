@@ -88,13 +88,28 @@ class SaleRepository {
     });
   }
 
-  async createWithItems(saleData, itemsData) {
-    return await db.sequelize.transaction(async (t) => {
-      const newSale = await Sale.create(saleData, { transaction: t });
+  // Updated method: accepts an external transaction via options.
+  async createWithItems(saleData, itemsData, options = {}) {
+    if (options.transaction) {
+      const newSale = await Sale.create(saleData, {
+        transaction: options.transaction,
+      });
       const saleItems = itemsData.map((it) => ({ ...it, sale_id: newSale.id }));
-      await SaleItem.bulkCreate(saleItems, { transaction: t });
+      await SaleItem.bulkCreate(saleItems, {
+        transaction: options.transaction,
+      });
       return newSale;
-    });
+    } else {
+      return await db.sequelize.transaction(async (t) => {
+        const newSale = await Sale.create(saleData, { transaction: t });
+        const saleItems = itemsData.map((it) => ({
+          ...it,
+          sale_id: newSale.id,
+        }));
+        await SaleItem.bulkCreate(saleItems, { transaction: t });
+        return newSale;
+      });
+    }
   }
 
   async getById(id) {
