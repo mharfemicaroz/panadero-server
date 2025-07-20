@@ -60,7 +60,7 @@ app.use(cors(corsOptions));
 (async () => {
   try {
     await db.sequelize.sync({ force: false });
-    console.log("Database synced successfully.");
+    console.log("Database synced successfully!");
   } catch (error) {
     console.error("Error syncing the database:", error.message);
   }
